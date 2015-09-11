@@ -55,6 +55,7 @@ public class QASetSelectionActivity extends AppCompatActivity {
                     radioButtonView.setGravity(Gravity.START);
                     ImageView imageView = new ImageView(this);
                     if(radio.length == 2) {
+                        radio[0] = radio[0].replaceAll("(\\r|\\n)", "");
                         radioButtonView.setText(radio[0]);
                         imageView.setImageBitmap(BitmapFactory.decodeFile(imgPath + File.separator + radio[0] + ".png"));
                     }
@@ -159,11 +160,11 @@ public class QASetSelectionActivity extends AppCompatActivity {
                     fis.close();
                     configData = byteArrayOutputStream.toString();
                 } catch (FileNotFoundException e) {
-                    Toast.makeText(QASetSelectionActivity.this, "Error in reading file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(QASetSelectionActivity.this, "File not found : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
-                    Toast.makeText(QASetSelectionActivity.this, "Error in reading file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(QASetSelectionActivity.this, "Error(I/O) in reading file : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (Exception e){
-                    Toast.makeText(QASetSelectionActivity.this, "Error in reading file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(QASetSelectionActivity.this, "Error in reading file : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
             else{

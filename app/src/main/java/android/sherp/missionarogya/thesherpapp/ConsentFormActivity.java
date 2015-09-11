@@ -36,13 +36,28 @@ public class ConsentFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consent_form);
 
+        GPSTracker gps = new GPSTracker(ConsentFormActivity.this);
+
+        // check if GPS enabled
+        if (gps.canGetLocation()) {
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
+            interviewDetails.setLatitude(Double.toString(latitude));
+            interviewDetails.setLongitude(Double.toString(longitude));
+            InterviewDetails.setInstance(interviewDetails);
+        } else {
+            gps.showSettingsAlert();
+        }
+
         TextView txtuser = (TextView) findViewById(R.id.loginID);
         txtuser.setText(interviewDetails.getInterviewerID());
 
         String[] venues = (interviewDetails.getListOfVenues()).split(",");
-        final List<String> venueList = Arrays.asList(venues);
+        List<String> venueList = Arrays.asList(venues);
 
         final CheckBox isConsentFormSigned = (CheckBox) findViewById(R.id.chkConsent);
+        final TextView txtLatitude = (TextView) findViewById(R.id.latitude);
+        final TextView txtLongitude = (TextView) findViewById(R.id.longitude);
         final ImageButton startInterview = (ImageButton) findViewById(R.id.buttonStartInterview);
         final TextView txtVenue = (TextView) findViewById(R.id.txtVenue);
         final Spinner spinVenue = (Spinner) findViewById(R.id.spinnerVenue);
@@ -52,33 +67,16 @@ public class ConsentFormActivity extends AppCompatActivity {
         isConsentFormSigned.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isConsentFormSigned.isChecked() == true) {
+                if (isConsentFormSigned.isChecked()) {
                     adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinVenue.setAdapter(adp);
-
                     txtVenue.setVisibility(View.VISIBLE);
                     txtVenue.setClickable(true);
                     spinVenue.setVisibility(View.VISIBLE);
                     spinVenue.setClickable(true);
-
-                    GPSTracker gps = new GPSTracker(ConsentFormActivity.this);
-
-                    // check if GPS enabled
-                    if (gps.canGetLocation()) {
-                        double latitude = gps.getLatitude();
-                        double longitude = gps.getLongitude();
-                        interviewDetails.setLatitude(Double.toString(latitude));
-                        interviewDetails.setLongitude(Double.toString(longitude));
-                        InterviewDetails.setInstance(interviewDetails);
-                        //Toast.makeText(ConsentFormActivity.this, Double.toString(latitude), Toast.LENGTH_LONG).show();
-                    } else {
-                        // can't get location
-                        // GPS or Network is not enabled
-                        // Ask user to enable GPS/network in settings
-                        gps.showSettingsAlert();
-                        //Toast.makeText(ConsentFormActivity.this, "Unable to get location.", Toast.LENGTH_LONG).show();
-                    }
                 } else {
+                    txtLatitude.setVisibility(View.INVISIBLE);
+                    txtLongitude.setVisibility(View.INVISIBLE);
                     txtVenue.setVisibility(View.INVISIBLE);
                     txtVenue.setClickable(false);
                     spinVenue.setVisibility(View.INVISIBLE);
@@ -92,17 +90,25 @@ public class ConsentFormActivity extends AppCompatActivity {
         spinVenue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if((isConsentFormSigned.isChecked() == true) && ( spinVenue.getSelectedItemPosition() > 0 )  ){
+                if((isConsentFormSigned.isChecked()) && ( spinVenue.getSelectedItemPosition() > 0 )  ){
                     startInterview.setVisibility(View.VISIBLE);
                     startInterview.setClickable(true);
+                    txtLatitude.setVisibility(View.VISIBLE);
+                    txtLatitude.setText("Latitude: " + interviewDetails.getLatitude());
+                    txtLongitude.setVisibility(View.VISIBLE);
+                    txtLongitude.setText("Longitude: " + interviewDetails.getLongitude());
                 }
                 else{
+                    txtLatitude.setVisibility(View.INVISIBLE);
+                    txtLongitude.setVisibility(View.INVISIBLE);
                     startInterview.setVisibility(View.INVISIBLE);
                     startInterview.setClickable(false);
                 }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+                txtLatitude.setVisibility(View.INVISIBLE);
+                txtLongitude.setVisibility(View.INVISIBLE);
                 startInterview.setVisibility(View.INVISIBLE);
                 startInterview.setClickable(false);
             }
@@ -129,6 +135,13 @@ public class ConsentFormActivity extends AppCompatActivity {
                 ConsentFormActivity.this.finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ConsentFormActivity.this, LoginActivity.class);
+        ConsentFormActivity.this.startActivity(intent);
+        ConsentFormActivity.this.finish();
     }
 
     @Override
@@ -247,16 +260,6 @@ class GPSTracker extends Service implements LocationListener {
     }
 
     /**
-     * Stop using GPS listener
-     * Calling this function will stop using GPS in your app
-     * */
-    public void stopUsingGPS(){
-        if(locationManager != null){
-            //locationManager.removeUpdates(GPSTracker.this);
-        }
-    }
-
-    /**
      * Function to get latitude
      * */
     public double getLatitude(){
@@ -294,13 +297,10 @@ class GPSTracker extends Service implements LocationListener {
      * */
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
         // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
-
+        alertDialog.setTitle("GPS settings");
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-
+        alertDialog.setMessage("GPS is not enabled. Do you want to turn it on?");
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
@@ -308,14 +308,13 @@ class GPSTracker extends Service implements LocationListener {
                 mContext.startActivity(intent);
             }
         });
-
         // on pressing cancel button
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+
             }
         });
-
         // Showing Alert Message
         alertDialog.show();
     }

@@ -7,7 +7,7 @@ var current_question = null;
 var arr_join = "~";
 var j_dir = "json/";
 var img_dir = "images/";
-var aud_dir = "audio/";
+var aud_dir = "/audio/";
 var flist = null;
 var load_init_ctr = null;
 var timer;
@@ -235,7 +235,7 @@ function processQuestion() {
 				}
 			}
 		} else {
-			alert("Please select an answer before proceeding!");
+			JSBridgeToSaveAnswers.showAlert("Please select an answer before proceeding !");
 		}
 	}
 }
@@ -291,13 +291,9 @@ function generate_final_result() {
 function generateAudioButtonName(audioId){
 	var audioButton = document.getElementById('playQues');
 	audioButton.name = audioId.toString();
-	alert("audioButton.name: "+audioButton.name);
 }
 
 function playQuestion(audioName){
-	var bleep = new Audio();
-	bleep.src = aud_dir + audioName.toString()+"m4r";
-	alert("loc : "+bleep.src);
-	bleep.play();
-	bleep = null;
+	var audiosrc = aud_dir + audioName.toString()+".mp3";
+	JSBridgeToSaveAnswers.playMusic(audiosrc);
 }

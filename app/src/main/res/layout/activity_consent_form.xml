@@ -8,6 +8,8 @@
     android:background="#E6E6E6"
     tools:context="android.sherp.missionarogya.thesherpapp.ConsentFormActivity">
 
+
+
     <TextView
         android:textColor="#000"
         android:layout_alignParentLeft="true"
@@ -71,11 +73,35 @@
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown" />
 
+    <TextView
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="530dp"
+        android:id="@+id/latitude"
+        android:layout_height="wrap_content"
+        android:textSize="15pt"
+        android:visibility="invisible"
+        android:text="" />
+
+    <TextView
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="560dp"
+        android:id="@+id/longitude"
+        android:layout_height="wrap_content"
+        android:textSize="15pt"
+        android:visibility="invisible"
+        android:text="" />
+
     <ImageButton
         android:id="@+id/buttonStartInterview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="550dp"
+        android:layout_marginTop="680dp"
         android:layout_centerHorizontal="true"
         android:clickable="false"
         android:visibility="invisible"

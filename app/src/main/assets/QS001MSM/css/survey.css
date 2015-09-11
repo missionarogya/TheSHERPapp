@@ -49,8 +49,8 @@ textarea { border:solid 1px #999; width: 100%; min-width: 200px;}
 .show { display: inline; visibility: visible; }
 .hide { display: none; visibility: hidden;} 
 
-#answer > dd {width: 30%; font-size: 90%; min-width: 200px; padding-left: 10%; padding-right: 10%;}
-#answer > dt {width: 10%; }
+#answer > dd {width: 50%; font-size: 90%; min-width: 500px; padding-left: 10%; padding-right: 10%;}
+#answer > dt {width: 50%; }
 
 #qDiv { margin:27px; }
 #loading { text-align: center; font-size: 14px;}

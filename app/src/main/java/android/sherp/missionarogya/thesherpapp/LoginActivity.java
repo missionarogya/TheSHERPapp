@@ -34,14 +34,13 @@ public class LoginActivity extends AppCompatActivity {
         final ImageButton loginButton = (ImageButton) findViewById(R.id.login);
         final EditText usernameText   = (EditText) findViewById(R.id.username);
         TextView txtqasetID = (TextView)findViewById(R.id.qasetID);
-        String[] users = {} ;
         if(interviewDetails.getInterviewerID() != null){
             usernameText.setText(interviewDetails.getInterviewerID());
         }
         boolean validUser = false ;
         Log.d("File contains : ", readConfig());
         String fileText = readConfig();
-        users = saveIntervieweeObject(fileText);
+        String[] users = saveIntervieweeObject(fileText);
         Log.d("omg : ", "fileText" + fileText);
         if(interviewDetails.getQasetID() != null){
             txtqasetID.setText(interviewDetails.getQasetID());
@@ -88,17 +87,17 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (params[0].contains("last_interviewee_id")) {
                 Log.d("omg : ", "omg!!");
-                interviewDetails.setIntervieweeID(params[1].toString());
+                interviewDetails.setIntervieweeID(params[1]);
                 InterviewDetails.setInstance(interviewDetails);
             }
             if (params[0].contains("device_id")) {
                 Log.d("omg : ", "omg!!");
-                interviewDetails.setDeviceID(params[1].toString());
+                interviewDetails.setDeviceID(params[1]);
                 InterviewDetails.setInstance(interviewDetails);
             }
             if (params[0].contains("venue")) {
                 Log.d("omg : ", "omg!!");
-                interviewDetails.setListOfVenues(params[1].toString());
+                interviewDetails.setListOfVenues("Select,"+params[1]);
                 InterviewDetails.setInstance(interviewDetails);
             }
 
@@ -146,16 +145,16 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     fis.close();
                 } catch (FileNotFoundException e) {
-                    Toast.makeText(LoginActivity.this, "Error in reading file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "File not found : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
-                    Toast.makeText(LoginActivity.this, "Error in reading file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Error in reading file : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }
        return byteArrayOutputStream.toString();
        // return "users:rajib,sonali,samya;" +
        //"device_id:tab001;" +
-       //"venue:select,abc,dfg,iop;" +
+       //"venue:abc,dfg,iop;" +
        //"last_interviewee_id:0000;"; //for emulator
     }
 

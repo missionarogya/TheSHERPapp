@@ -12,8 +12,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/qasetID"
         android:layout_height="wrap_content"
-        android:textSize="20pt"
-        android:text="" ></TextView>
+        android:textSize="20pt"></TextView>
 
     <EditText
         android:id="@+id/username"
@@ -29,7 +28,7 @@
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="500dip"
+        android:layout_marginTop="460dip"
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:background="@android:color/transparent"

@@ -45,7 +45,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
         interviewDetails.setIntervieweeID(intervieweeID);
         InterviewDetails.setInstance(interviewDetails);
         TextView txtintervieweeID = (TextView) findViewById(R.id.intervieweeID);
-        txtintervieweeID.setText(intervieweeID);
+        txtintervieweeID.setText("Interviewee ID : "+intervieweeID);
 
         boolean isUpdated = updateIntervieweeIDtoConfig(interviewDetails.getIntervieweeID());
         if (isUpdated) {
@@ -116,10 +116,10 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 fos.close();
                 isUpdated = true;
             } catch (FileNotFoundException e) {
-                Toast.makeText(ShowIntervieweeID.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ShowIntervieweeID.this, "Config File not found: "+e.getMessage(), Toast.LENGTH_LONG).show();
                 isUpdated = false;
             } catch (IOException e) {
-                Toast.makeText(ShowIntervieweeID.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ShowIntervieweeID.this, "I/O error: "+e.getMessage(), Toast.LENGTH_LONG).show();
                 isUpdated = false;
             }
         } else {
@@ -136,7 +136,12 @@ public class ShowIntervieweeID extends AppCompatActivity {
         try {
             if (!interviewDataDir.exists()) {
                 interviewDataDir.mkdir();
-                success = writeToJSON(interviewDataDir, interviewDetails);
+                if(interviewDataDir.exists() && interviewDataDir.isDirectory()) {
+                    success = writeToJSON(interviewDataDir, interviewDetails);
+                }
+                else{
+                    success = false;
+                }
                 //Toast.makeText(ShowIntervieweeID.this, "Interview data successfully written to JSON.", Toast.LENGTH_SHORT).show();
             } else {
                 success = writeToJSON(interviewDataDir, interviewDetails);
@@ -156,21 +161,25 @@ public class ShowIntervieweeID extends AppCompatActivity {
         if (!interviewDataFile.exists()) {
             try {
                 interviewDataFile.createNewFile();
-                FileOutputStream f = new FileOutputStream(interviewDataFile);
-                PrintWriter pw = new PrintWriter(f);
-                pw.println("[");
-                pw.println("    {");
-                pw.println("        \"qaset_id\":"+"\""+interviewDetails.getQasetID()+"\",");
-                pw.println("        \"interviewer_id\":"+"\""+interviewDetails.getInterviewerID()+"\",");
-                pw.println("        \"interviewee_id\":"+"\""+interviewDetails.getIntervieweeID()+"\",");
-                pw.println("        \"interview_dttm\": { \"startdt_tm\":"+"\""+interviewDetails.getStart()+"\", \"enddt_tm\":"+"\""+interviewDetails.getEnd()+"\"},");
-                pw.println("        \"location\": { \"latitude\":"+"\""+interviewDetails.getLatitude()+"\", \"longitude\":"+"\""+interviewDetails.getLongitude()+"\"},");
-                pw.println("        \"venue\":"+"\""+interviewDetails.getSelectedVenue()+"\",");
-                pw.println("        \"answer\":"+interviewDetails.getAnswers());
-                pw.flush();
-                pw.close();
-                f.close();
-                success = true;
+                if(interviewDataFile.exists() && interviewDataFile.isFile()){
+                    FileOutputStream f = new FileOutputStream(interviewDataFile);
+                    PrintWriter pw = new PrintWriter(f);
+                    pw.println("[");
+                    pw.println("    {");
+                    pw.println("        \"qaset_id\":"+"\""+interviewDetails.getQasetID()+"\",");
+                    pw.println("        \"interviewer_id\":"+"\""+interviewDetails.getInterviewerID()+"\",");
+                    pw.println("        \"interviewee_id\":"+"\""+interviewDetails.getIntervieweeID()+"\",");
+                    pw.println("        \"interview_dttm\": { \"startdt_tm\":"+"\""+interviewDetails.getStart()+"\", \"enddt_tm\":"+"\""+interviewDetails.getEnd()+"\"},");
+                    pw.println("        \"location\": { \"latitude\":"+"\""+interviewDetails.getLatitude()+"\", \"longitude\":"+"\""+interviewDetails.getLongitude()+"\"},");
+                    pw.println("        \"venue\":"+"\""+interviewDetails.getSelectedVenue()+"\",");
+                    pw.println("        \"answer\":"+interviewDetails.getAnswers());
+                    pw.flush();
+                    pw.close();
+                    f.close();
+                    success = true;
+                }else{
+                    success = false;
+                }
             } catch (IOException e) {
                 Toast.makeText(ShowIntervieweeID.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 success = false;
@@ -185,7 +194,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 pw.println("        \"interviewee_id\":"+"\""+interviewDetails.getIntervieweeID()+"\",");
                 pw.println("        \"interview_dttm\": { \"startdt_tm\":"+"\""+interviewDetails.getStart()+"\", \"enddt_tm\":"+"\""+interviewDetails.getEnd()+"\"},");
                 pw.println("        \"location\": { \"latitude\":"+"\""+interviewDetails.getLatitude()+"\", \"longitude\":"+"\""+interviewDetails.getLongitude()+"\"},");
-                pw.println("        \"venue\":"+"\""+interviewDetails.getSelectedVenue()+"\",");
+                pw.println("        \"venue\":" + "\"" + interviewDetails.getSelectedVenue()+"\",");
                 pw.println("        \"answer\":"+interviewDetails.getAnswers());
                 pw.flush();
                 pw.close();
@@ -200,7 +209,6 @@ public class ShowIntervieweeID extends AppCompatActivity {
 
     private String generateIntervieweeID(String lastIntervieweeID, String deviceID, String qasetID){
         previousIntervieweeId = lastIntervieweeID;
-        String currentIntervieweeID = "";
         int i ;
         if(!lastIntervieweeID.equals("0000"))
         {
@@ -212,7 +220,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
             i = Integer.parseInt(lastIntervieweeID) ;
         }
         i = i+1;
-        currentIntervieweeID = qasetID + "_" + deviceID + "_" + Integer.toString(i);
+        String currentIntervieweeID = qasetID + "_" + deviceID + "_" + Integer.toString(i);
      return currentIntervieweeID;
     }
 

@@ -2,15 +2,20 @@ package android.sherp.missionarogya.thesherpapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import java.io.IOException;
 import java.util.Calendar;
 
 public class InterviewQuestionnaire extends AppCompatActivity {
@@ -85,6 +90,34 @@ class JSBridgeToSaveAnswers{
         Intent intent = new Intent(currentActivity,ShowIntervieweeID.class);
         currentActivity.startActivity(intent);
         currentActivity.finish();
+    }
+
+    @android.webkit.JavascriptInterface
+    public void showAlert(String message){
+        Toast.makeText(currentActivity, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @android.webkit.JavascriptInterface
+    public void playMusic(String audioName){
+        MediaPlayer mp = new MediaPlayer();
+        if(mp.isPlaying())
+        {
+            mp.stop();
+        }
+        try {
+            mp.reset();
+            //AssetFileDescriptor afd = currentActivity.getAssets().openFd("QS001MSM/audio/aud_1A.mp3");
+            AssetFileDescriptor afd = currentActivity.getAssets().openFd(interviewDetails.getQasetID()+audioName);
+            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mp.prepare();
+            mp.start();
+        } catch (IllegalStateException e) {
+            Toast.makeText(currentActivity, "Error in playing audio: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } catch (IOException e) {
+            Toast.makeText(currentActivity, "Error(I/O) in playing audio: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 }
 
