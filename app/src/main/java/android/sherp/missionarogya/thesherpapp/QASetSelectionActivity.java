@@ -103,8 +103,7 @@ public class QASetSelectionActivity extends AppCompatActivity {
             String s = ((RadioButton) v).getText().toString();
             interviewDetails.setQasetID(s);
             InterviewDetails.setInstance(interviewDetails);
-            Toast.makeText(QASetSelectionActivity.this, "You have selected QASet: " + s,
-                    Toast.LENGTH_SHORT).show();
+            showToast("You have selected QASet: " + s);
             go.setVisibility(View.VISIBLE);
             go.setClickable(true);
             go.setOnClickListener(new View.OnClickListener() {
@@ -146,40 +145,37 @@ public class QASetSelectionActivity extends AppCompatActivity {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         File sherpDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"Sherp");
         if(sherpDir.exists() && sherpDir.isDirectory()){
-            //Toast.makeText(QASetSelectionActivity.this, "sherp dir exists", Toast.LENGTH_LONG).show();
             File sherpConfig = new File(sherpDir, "SherpConfig.txt");
             if(sherpConfig.exists() && sherpConfig.isFile()){
                 try {
-              //      Toast.makeText(QASetSelectionActivity.this, "sherp config file exists", Toast.LENGTH_LONG).show();
                     FileInputStream fis = new FileInputStream(sherpConfig);
                     int content;
                     while ((content = fis.read()) != -1) {
                         byteArrayOutputStream.write((char) content);
                     }
-                //    Toast.makeText(QASetSelectionActivity.this, "omg: "+byteArrayOutputStream.toString(), Toast.LENGTH_LONG).show();
                     fis.close();
                     configData = byteArrayOutputStream.toString();
                 } catch (FileNotFoundException e) {
-                    Toast.makeText(QASetSelectionActivity.this, "File not found : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("File not found : " + e.getMessage());
                 } catch (IOException e) {
-                    Toast.makeText(QASetSelectionActivity.this, "Error(I/O) in reading file : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("Error(I/O) in reading file : " + e.getMessage());
                 } catch (Exception e){
-                    Toast.makeText(QASetSelectionActivity.this, "Error in reading file : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("Error in reading file : " + e.getMessage());
                 }
             }
             else{
-                Toast.makeText(QASetSelectionActivity.this, "The Sherp Config file does not exist.", Toast.LENGTH_SHORT).show();
+                showToast("The Sherp Config file does not exist.");
             }
         }
         else {
-            Toast.makeText(QASetSelectionActivity.this, "The Sherp folder does not exist.", Toast.LENGTH_SHORT).show();
+            showToast("The Sherp folder does not exist.");
         }
     }
     catch(Exception e)
     {
-        Toast.makeText(QASetSelectionActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        showToast(e.getMessage());
     }
-      return configData;
+    return configData;
       //  return "QS001MSM:dsddsddssdsdsd;" +
        //"QS004DRT:fgfgfgfffffffffff;" +
        //"QS001ABC:jjjjjjiiiiiiiiii;" +
@@ -191,5 +187,12 @@ public class QASetSelectionActivity extends AppCompatActivity {
         interviewDetails.setQasetID(null);
         InterviewDetails.setInstance(interviewDetails);
         QASetSelectionActivity.this.finish();
+    }
+
+    private void showToast(String message){
+        Toast toast;
+        toast = Toast.makeText(QASetSelectionActivity.this, message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 890);
+        toast.show();
     }
 }

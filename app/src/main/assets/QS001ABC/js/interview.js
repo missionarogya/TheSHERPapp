@@ -83,10 +83,10 @@ function fetchQuestionList() {
 }
 /* Display the question to the end-user after processing the json */
 function generate_question(questionid) {
-	//generateAudioButtonName(questionid);
+
 	current_question = interiew_questions.filter(function (el) { return el.questionid == questionid; });
 	if(current_question[0].isvisible == true) { /* general question to be displayed to the user */
-	var audio_id = current_question[0].audiofile;
+	var audio_id = current_question[0].audio;
 	if(audio_id != null)
 	generateAudioButtonName(audio_id);
 		/* set question */
@@ -119,7 +119,6 @@ function generate_question(questionid) {
 			if(lang_ans == undefined || lang_ans == 'undefined' || lang_ans == null) {
 				lang_ans = "";
 			}
-			//var col = document.createElement("color");
 			var lbl = document.createElement("label");
 			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/>";
 			if(ansList[i].type == "radio" || ansList[i].type == "checkbox" || ansList[i].type == "text" || ansList[i].type == "number") {
@@ -134,10 +133,10 @@ function generate_question(questionid) {
 				rad.setAttribute('value', ansList[i].value);
 				var ansDD = document.createElement('dd');
 				ansDD.appendChild(rad);
-				var color = ansList[i].color
-				if(ansList[i].type == "radio" &&  color != null){
+				var image = ansList[i].image
+				if(ansList[i].type == "radio" &&  image != null){
 					var img = document.createElement('img'); 
-					img.setAttribute('src', img_dir+color+".png" ); 
+					img.setAttribute('src', img_dir + image + ".png" );
 					img.setAttribute('class',"col");
 					ansDD.appendChild(img);					
 				}								

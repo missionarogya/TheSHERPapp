@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,12 +64,12 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
                 if (username.length() == 0 ||  username.equals("") || username == null) {
-                    Toast.makeText(LoginActivity.this, "Username required", Toast.LENGTH_SHORT).show();
+                    showToast("Username required");
                 } else if (isValiduser) {
                     Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
                     LoginActivity.this.startActivity(intent);
                 } else {
-                    Toast.makeText(LoginActivity.this, "Access denied", Toast.LENGTH_SHORT).show();
+                    showToast("Access denied");
                 }
             }
         });
@@ -123,12 +124,12 @@ public class LoginActivity extends AppCompatActivity {
             }
             else
             {
-                Toast.makeText(LoginActivity.this, "Config File does not exist", Toast.LENGTH_LONG).show();
+                showToast("Config File does not exist");
                 config = null;
             }
         }
         else{
-            Toast.makeText(LoginActivity.this, "Folder does not exist", Toast.LENGTH_LONG).show();
+            showToast("Sherp Folder does not exist");
             qasetDir = null;
             config = null;
         }
@@ -145,9 +146,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     fis.close();
                 } catch (FileNotFoundException e) {
-                    Toast.makeText(LoginActivity.this, "File not found : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("File not found : " + e.getMessage());
                 } catch (IOException e) {
-                    Toast.makeText(LoginActivity.this, "Error in reading file : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    showToast("Error in reading file : " + e.getMessage());
                 }
             }
         }
@@ -156,6 +157,14 @@ public class LoginActivity extends AppCompatActivity {
        //"device_id:tab001;" +
        //"venue:abc,dfg,iop;" +
        //"last_interviewee_id:0000;"; //for emulator
+    }
+
+    private void showToast(String message){
+        Toast toast;
+        toast = Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 330);
+        toast.show();
+
     }
 
     @Override
