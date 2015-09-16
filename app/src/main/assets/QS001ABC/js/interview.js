@@ -120,7 +120,7 @@ function generate_question(questionid) {
 				lang_ans = "";
 			}
 			var lbl = document.createElement("label");
-			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/>";
+			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/><br/><br/>";
 			if(ansList[i].type == "radio" || ansList[i].type == "checkbox" || ansList[i].type == "text" || ansList[i].type == "number") {
 			
 				var rad = document.createElement('input'); 
@@ -160,6 +160,10 @@ function generate_question(questionid) {
 }
 function processQuestion() {
 	console.log(current_question[0]);
+	var audio_id = current_question[0].audio;
+	if(audio_id != null){
+		playQuestion(current_question[0].audio);
+	}
 	if(current_question[0].answers[0].type == "comment") {
 		/* skip to next question after showing the comment */
 		if(current_question[0].branchlogic.success == null || current_question[0].branchlogic.failure == null) {

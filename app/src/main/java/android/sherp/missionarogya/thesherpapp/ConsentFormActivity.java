@@ -93,10 +93,20 @@ public class ConsentFormActivity extends AppCompatActivity {
                 if((isConsentFormSigned.isChecked()) && ( spinVenue.getSelectedItemPosition() > 0 )  ){
                     startInterview.setVisibility(View.VISIBLE);
                     startInterview.setClickable(true);
-                    txtLatitude.setVisibility(View.VISIBLE);
-                    txtLatitude.setText("Latitude: " + interviewDetails.getLatitude());
-                    txtLongitude.setVisibility(View.VISIBLE);
-                    txtLongitude.setText("Longitude: " + interviewDetails.getLongitude());
+                    if(interviewDetails.getLatitude() != "0.0") {
+                        txtLatitude.setVisibility(View.VISIBLE);
+                        txtLatitude.setText("Latitude: " + interviewDetails.getLatitude());
+                    }
+                    else{
+                        txtLatitude.setVisibility(View.INVISIBLE);
+                    }
+                    if(interviewDetails.getLongitude() != "0.0") {
+                        txtLongitude.setVisibility(View.VISIBLE);
+                        txtLongitude.setText("Longitude: " + interviewDetails.getLongitude());
+                    }
+                    else{
+                        txtLongitude.setVisibility(View.INVISIBLE);
+                    }
                 }
                 else{
                     txtLatitude.setVisibility(View.INVISIBLE);
