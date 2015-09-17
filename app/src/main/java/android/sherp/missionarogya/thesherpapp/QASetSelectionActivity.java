@@ -113,7 +113,6 @@ public class QASetSelectionActivity extends AppCompatActivity {
                     QASetSelectionActivity.this.startActivity(intent);
                 }
             });
-
         }
     };
 

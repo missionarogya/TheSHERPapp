@@ -13,6 +13,10 @@ var load_init_ctr = null;
 var timer;
 var listfile;
 var intervieweeID ;
+var ansRadio = document.getElementById("answer");
+var nextButton = document.getElementById("btnNext");
+var soundButton = document.getElementById("playQues");
+var firstQuestion;
 
 /* Start point */
 function init(listfile){
@@ -46,7 +50,8 @@ function checkquestionsloaded(){
 	if(load_init_ctr!=null && load_init_ctr == 0) {
 		clearTimeout(timer);
 		/* show the question based on the start point defined */
-		generate_question(flist.start_question);
+		firstQuestion = flist.start_question;
+		generate_question(firstQuestion);
 		document.getElementById('loading').className = "hide";
 		document.getElementById('qDiv').className ='show';	
 	}
@@ -83,18 +88,17 @@ function fetchQuestionList() {
 function generate_question(questionid) {
 	current_question = interiew_questions.filter(function (el) { return el.questionid == questionid; });
 	if(current_question[0].isvisible == true) { /* general question to be displayed to the user */
-	var audio_id = current_question[0].audio;
-	var nextButton = document.getElementById("btnNext");
-	var soundButton = document.getElementById("playQues");
+	var audio_id = current_question[0].audio;	
 	if(audio_id != null){
 		generateAudioButtonName(audio_id);
-		if(current_question[0].questionid == "q_1A"){        	
-        	soundButton.style.display = 'none';
-			nextButton.style.display = 'inline';
+		if(current_question[0].questionid == firstQuestion){        	
+        	nextButton.style.display = 'inline';
+			ansRadio.style.display = 'inline';
         }
         else{
-        	soundButton.style.display = 'inline';
-			nextButton.style.display = 'none';
+        	nextButton.style.display = 'none';
+			ansRadio.style.display = 'none';
+			soundButton.style.display = 'none'
         }
 	}
 		/* set question */
@@ -157,8 +161,7 @@ function generate_question(questionid) {
 				var ansDD = document.createElement('dd');
 				ansDD.appendChild(rad);
 				a.appendChild(ansDD);
-			} 
-
+			}
 		}
 		/* /set answer */
 	} else {
@@ -253,17 +256,19 @@ function goToNextQuestion(audioLength, audio_id){
 	if(audio_id != null){
 		playQuestion(audio_id);
 	}
-	var nextButton = document.getElementById("btnNext");	
 	var counter = parseInt(audioLength) ;
 	var id = setInterval(function() {					
 		counter--;
-		//alert(counter.toString());
 		if(counter == 0) {
 			nextButton.style.display = 'inline';
+			ansRadio.style.display = 'inline';
+			soundButton.style.display = 'inline';
 			clearInterval(id);
 		}
 		else{
 			nextButton.style.display = 'none';
+			ansRadio.style.display = 'none';
+			soundButton.style.display = 'none';
 		}
 	}, 1000);	
 }
