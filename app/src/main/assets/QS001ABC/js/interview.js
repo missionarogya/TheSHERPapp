@@ -13,7 +13,7 @@ var load_init_ctr = null;
 var timer;
 var listfile;
 var intervieweeID ;
-var ansRadio = document.getElementById("answer");
+//var ansRadio = document.getElementById("answer");
 var nextButton = document.getElementById("btnNext");
 var soundButton = document.getElementById("playQues");
 var firstQuestion;
@@ -93,11 +93,11 @@ function generate_question(questionid) {
 		generateAudioButtonName(audio_id);
 		if(current_question[0].questionid == firstQuestion){        	
         	nextButton.style.display = 'inline';
-			ansRadio.style.display = 'inline';
+			//ansRadio.style.display = 'inline';
         }
         else{
         	nextButton.style.display = 'none';
-			ansRadio.style.display = 'none';
+			//ansRadio.style.display = 'none';
 			soundButton.style.display = 'none'
         }
 	}
@@ -261,13 +261,13 @@ function goToNextQuestion(audioLength, audio_id){
 		counter--;
 		if(counter == 0) {
 			nextButton.style.display = 'inline';
-			ansRadio.style.display = 'inline';
+			//ansRadio.style.display = 'inline';
 			soundButton.style.display = 'inline';
 			clearInterval(id);
 		}
 		else{
 			nextButton.style.display = 'none';
-			ansRadio.style.display = 'none';
+			//ansRadio.style.display = 'none';
 			soundButton.style.display = 'none';
 		}
 	}, 1000);	
