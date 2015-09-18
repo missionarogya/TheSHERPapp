@@ -15,12 +15,12 @@
 		
 <nav id="nav1">
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<img id="playQues" name="" onclick="playQuestion(this.name)" src="images/play.png">
+	<img id="playQues" name="" style="display:none;" onclick="playQuestion(this.name)" src="images/play.png">
   </nav>
-		<dl id="answer"></dl>
+		<dl id="answer" style="display:inline;"></dl>
 		<dl>
 			<dt>&nbsp;</dt>
-			<img alt="Next" src="images/next.png" onclick="processQuestion()"> 
+			<img alt="Next" id="btnNext" src="images/next.png" style="display:none;" onclick="processQuestion()">
 		</dl>
 	</div>
 	<ul id="finalList" class="hide"></ul>

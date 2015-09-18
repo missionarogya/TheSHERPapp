@@ -8,7 +8,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".LoginActivity"
-            android:label="Login"
+            android:label="The SHERP app"
             android:noHistory="true"
             android:screenOrientation="portrait" >
             <intent-filter>

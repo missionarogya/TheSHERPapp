@@ -13,6 +13,9 @@ var load_init_ctr = null;
 var timer;
 var listfile;
 var intervieweeID ;
+var nextButton = document.getElementById("btnNext");
+var soundButton = document.getElementById("playQues");
+var firstQuestion;
 
 /* Start point */
 function init(listfile){
@@ -46,7 +49,8 @@ function checkquestionsloaded(){
 	if(load_init_ctr!=null && load_init_ctr == 0) {
 		clearTimeout(timer);
 		/* show the question based on the start point defined */
-		generate_question(flist.start_question);
+		firstQuestion = flist.start_question;
+		generate_question(firstQuestion);
 		document.getElementById('loading').className = "hide";
 		document.getElementById('qDiv').className ='show';	
 	}
@@ -73,22 +77,27 @@ function fetchQuestionList() {
 				initval = initval_text;
 			}
 			eval("var " + question.questionid + "=" + initval + ";");
-			window[question.questionid] = initval;
-			
-		}
-		
+			window[question.questionid] = initval;			
+		}		
 	} 
 	load_init_ctr--;
 	return true;
 }
 /* Display the question to the end-user after processing the json */
 function generate_question(questionid) {
-	//generateAudioButtonName(questionid);
 	current_question = interiew_questions.filter(function (el) { return el.questionid == questionid; });
 	if(current_question[0].isvisible == true) { /* general question to be displayed to the user */
-	var audio_id = current_question[0].audiofile;
-	if(audio_id != null)
-	generateAudioButtonName(audio_id);
+	var audio_id = current_question[0].audio;
+	if(current_question[0].questionid == firstQuestion){        	
+        nextButton.style.display = 'inline';
+		soundButton.style.display = 'none'
+    }else{
+       	nextButton.style.display = 'none';
+		soundButton.style.display = 'none'
+    }
+	if(audio_id != null){
+		generateAudioButtonName(audio_id);		
+	}
 		/* set question */
 		var q = document.getElementById('question');
 		/* remove existing elements, if any */
@@ -119,9 +128,8 @@ function generate_question(questionid) {
 			if(lang_ans == undefined || lang_ans == 'undefined' || lang_ans == null) {
 				lang_ans = "";
 			}
-			//var col = document.createElement("color");
 			var lbl = document.createElement("label");
-			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/>";
+			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/><br/><br/>";
 			if(ansList[i].type == "radio" || ansList[i].type == "checkbox" || ansList[i].type == "text" || ansList[i].type == "number") {
 			
 				var rad = document.createElement('input'); 
@@ -134,10 +142,10 @@ function generate_question(questionid) {
 				rad.setAttribute('value', ansList[i].value);
 				var ansDD = document.createElement('dd');
 				ansDD.appendChild(rad);
-				var color = ansList[i].color
-				if(ansList[i].type == "radio" &&  color != null){
+				var image = ansList[i].image
+				if(ansList[i].type == "radio" &&  image != null){
 					var img = document.createElement('img'); 
-					img.setAttribute('src', img_dir+color+".png" ); 
+					img.setAttribute('src', img_dir + image + ".png" );
 					img.setAttribute('class',"col");
 					ansDD.appendChild(img);					
 				}								
@@ -150,8 +158,7 @@ function generate_question(questionid) {
 				var ansDD = document.createElement('dd');
 				ansDD.appendChild(rad);
 				a.appendChild(ansDD);
-			} 
-
+			}
 		}
 		/* /set answer */
 	} else {
@@ -165,10 +172,11 @@ function processQuestion() {
 		/* skip to next question after showing the comment */
 		if(current_question[0].branchlogic.success == null || current_question[0].branchlogic.failure == null) {
 			generate_final_result();
-		} else { 
-			generate_question(current_question[0].branchlogic.success);
 		}
-	} else {
+		 else { 
+			generate_question(current_question[0].branchlogic.success);					
+		}			
+	} else {	
 		var val = null;
 		var id = current_question[0].questionid;
 		var qType = current_question[0].answers[0].type.toLowerCase();
@@ -213,31 +221,51 @@ function processQuestion() {
 		}
 		if(val !=undefined && val!='undefined' && val!=null && val!="" ) {
 			/* get the value & branch to a question based on the decision logic) */
-			if(qType != 'radio' && qType !== 'number') {
+			if(qType != 'radio' && qType !== 'number') {alert("6");
 				eval (id + "='" + val + "';");
 			} else { 
 				eval (id + "=" + val + ";");
 			}
 			/*	window[id] = val; */
-			var logic = eval(current_question[0].branchlogic.logic);
+			var logic = eval(current_question[0].branchlogic.logic);			
 			if( logic == true || logic == "1" ) {
 				if(current_question[0].branchlogic.success != null) {
 					generate_question(current_question[0].branchlogic.success);
+					goToNextQuestion(current_question[0].audioLength, current_question[0].audio);
 				}  else {
-					generate_final_result();
+					generate_final_result();			
 				}
-
 			} else {
 				if(current_question[0].branchlogic.failure!=null) {
 					generate_question(current_question[0].branchlogic.failure);
-				}  else {
-					generate_final_result();
+					goToNextQuestion(current_question[0].audioLength, current_question[0].audio);			
+					}  else {
+						generate_final_result();
+					}
 				}
+			} else {
+				JSBridgeToSaveAnswers.showAlert("Please select an answer before proceeding !");
 			}
-		} else {
-			JSBridgeToSaveAnswers.showAlert("Please select an answer before proceeding !");
-		}
 	}
+}
+
+function goToNextQuestion(audioLength, audio_id){
+	if(audio_id != null){
+		playQuestion(audio_id);
+	}
+	var counter = parseInt(audioLength) ;
+	var id = setInterval(function() {					
+		counter--;
+		if(counter == 0) {
+			nextButton.style.display = 'inline';
+			soundButton.style.display = 'inline';
+			clearInterval(id);
+		}
+		else{
+			nextButton.style.display = 'none';
+			soundButton.style.display = 'none';
+		}
+	}, 1000);	
 }
 
 /*Process the branch logic for decision question; isvisible = false;*/
@@ -280,7 +308,7 @@ function generate_final_result() {
 		/*var txt = id + " : " + answer + "&nbsp;&nbsp;<small>&nbsp;Type:" + type + "</small>&nbsp;&nbsp;<small>&nbsp;Visible:" + question.isvisible + "</small>";*/
 		var txt = id + " :: " + answer;
 		r.innerHTML = txt;
-		ansList.appendChild(r);
+		//ansList.appendChild(r);
 		if (answer != -99 && answer != "#"){
 			ans.push({"question": id, "answer" : answer});
 			}
