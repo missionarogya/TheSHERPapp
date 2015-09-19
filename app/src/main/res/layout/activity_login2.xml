@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/qasetID"
         android:layout_height="wrap_content"
-        android:textSize="20pt"></TextView>
+        android:textSize="20pt"/>
 
     <EditText
         android:id="@+id/username"
@@ -32,6 +32,7 @@
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:background="@android:color/transparent"
+        android:contentDescription="Login"
         android:src="@drawable/login"
         android:scaleType="fitXY" />
 </RelativeLayout>

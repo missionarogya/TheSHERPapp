@@ -28,7 +28,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "-------------------------------------------------------------------------------------------------------------------------------------------------\nLaunching the SHERP Interview app.\n");
+        InterviewDetails.setInstance(interviewDetails);
+
         if(interviewDetails.getQasetID() == null){
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage()+"QASet has not been selected yet. Displaying all QASets.\n");
+            InterviewDetails.setInstance(interviewDetails);
             Intent intent = new Intent(LoginActivity.this, QASetSelectionActivity.class);
             LoginActivity.this.startActivity(intent);
         }
@@ -39,12 +44,12 @@ public class LoginActivity extends AppCompatActivity {
             usernameText.setText(interviewDetails.getInterviewerID());
         }
         boolean validUser = false ;
-        Log.d("File contains : ", readConfig());
         String fileText = readConfig();
         String[] users = saveIntervieweeObject(fileText);
-        Log.d("omg : ", "fileText" + fileText);
         if(interviewDetails.getQasetID() != null){
             txtqasetID.setText(interviewDetails.getQasetID());
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Launching the Login screen.\n\nReading from config - " + interviewDetails.getQasetID()+  ".txt" + "\n\n" + fileText + "\n\n");
+            InterviewDetails.setInstance(interviewDetails);
         }
         final String[] listOfUsers = users;
         //final String[] listOfUsers = {"sonali","samya","rajib"}; //for emulator
@@ -52,27 +57,32 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean isValiduser = false;
                 String username = usernameText.getText().toString().toLowerCase().trim();
-                Log.d("omg : ", "username"+username);
+                Log.d("omg : ", "username" + username);
                 for (String uname : listOfUsers) {
-                    Log.d("omg : ", "uname"+uname);
+                    Log.d("omg : ", "uname" + uname);
                     if (username.equals(uname.toLowerCase())) {
                         interviewDetails.setInterviewerID(username);
                         InterviewDetails.setInstance(interviewDetails);
-                        Log.d("omg : ", "happy "+username);
+                        Log.d("omg : ", "happy " + username);
                         isValiduser = true;
                         break;
                     }
                 }
-                if (username.length() == 0 ||  username.equals("") || username == null) {
+                if (username.length() == 0 || username.equals("") || username == null) {
                     showToast("Username required");
                 } else if (isValiduser) {
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Logged in as: " + interviewDetails.getInterviewerID().toUpperCase() + "\n");
+                    InterviewDetails.setInstance(interviewDetails);
                     Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
                     LoginActivity.this.startActivity(intent);
                 } else {
                     showToast("Access denied");
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + username.toUpperCase() + " was denied login access.\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 }
             }
         });
+
     }
 
     String[] saveIntervieweeObject(String fileText){
@@ -124,12 +134,16 @@ public class LoginActivity extends AppCompatActivity {
             }
             else
             {
-                showToast("Config File does not exist");
+                showToast(qasetID + "Config File does not exist");
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + qasetID + "Config File does not exist. \n");
+                InterviewDetails.setInstance(interviewDetails);
                 config = null;
             }
         }
         else{
             showToast("Sherp Folder does not exist");
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "SHERP folder does not exist. \n");
+            InterviewDetails.setInstance(interviewDetails);
             qasetDir = null;
             config = null;
         }
@@ -147,12 +161,16 @@ public class LoginActivity extends AppCompatActivity {
                     fis.close();
                 } catch (FileNotFoundException e) {
                     showToast("File not found : " + e.getMessage());
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]File not found :" + e.getMessage() + "\n\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 } catch (IOException e) {
                     showToast("Error in reading file : " + e.getMessage());
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error in reading file :" + e.getMessage() + "\n\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 }
             }
         }
-       return byteArrayOutputStream.toString();
+        return byteArrayOutputStream.toString();
        // return "users:rajib,sonali,samya;" +
        //"device_id:tab001;" +
        //"venue:abc,dfg,iop;" +
@@ -164,20 +182,38 @@ public class LoginActivity extends AppCompatActivity {
         toast = Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 330);
         toast.show();
-
     }
 
     @Override
     public void onBackPressed() {
         backPressed = backPressed + 1;
+        boolean logFileWrite;
         if(backPressed == 1){
             Toast.makeText(LoginActivity.this, "Press the back key again to exit.", Toast.LENGTH_SHORT).show();
         }else if (backPressed == 2){
             interviewDetails.setQasetID(null);
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Exiting from app.\n");
+            InterviewDetails.setInstance(interviewDetails);
+            logFileWrite = InterviewDetails.writeToLogFile(interviewDetails.getLogMessage());
+            if(logFileWrite){
+                Toast.makeText(LoginActivity.this, "All your actions have been recorded for logging.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(LoginActivity.this, "There was a problem logging your actions..", Toast.LENGTH_SHORT).show();
+            }
+            interviewDetails.setLogMessage(null);
             InterviewDetails.setInstance(interviewDetails);
             LoginActivity.this.finish();
         }else{
             interviewDetails.setQasetID(null);
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Exiting from app.\n");
+            InterviewDetails.setInstance(interviewDetails);
+            logFileWrite = InterviewDetails.writeToLogFile(interviewDetails.getLogMessage());
+            if(logFileWrite){
+                Toast.makeText(LoginActivity.this, "All your actions have been recorded for logging.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(LoginActivity.this, "There was a problem logging your actions..", Toast.LENGTH_SHORT).show();
+            }
+            interviewDetails.setLogMessage("");
             InterviewDetails.setInstance(interviewDetails);
             LoginActivity.this.finish();
         }

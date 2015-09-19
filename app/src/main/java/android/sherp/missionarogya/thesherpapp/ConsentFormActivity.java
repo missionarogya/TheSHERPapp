@@ -36,6 +36,9 @@ public class ConsentFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consent_form);
 
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Launching the consent form screen.\n\n");
+        InterviewDetails.setInstance(interviewDetails);
+
         GPSTracker gps = new GPSTracker(ConsentFormActivity.this);
 
         // check if GPS enabled
@@ -93,14 +96,14 @@ public class ConsentFormActivity extends AppCompatActivity {
                 if((isConsentFormSigned.isChecked()) && ( spinVenue.getSelectedItemPosition() > 0 )  ){
                     startInterview.setVisibility(View.VISIBLE);
                     startInterview.setClickable(true);
-                    if(interviewDetails.getLatitude() != "0.0") {
+                    if(!interviewDetails.getLatitude().equals("0.0")) {
                         txtLatitude.setVisibility(View.VISIBLE);
                         txtLatitude.setText("Latitude: " + interviewDetails.getLatitude());
                     }
                     else{
                         txtLatitude.setVisibility(View.INVISIBLE);
                     }
-                    if(interviewDetails.getLongitude() != "0.0") {
+                    if(!interviewDetails.getLongitude().equals("0.0")) {
                         txtLongitude.setVisibility(View.VISIBLE);
                         txtLongitude.setText("Longitude: " + interviewDetails.getLongitude());
                     }
@@ -128,6 +131,7 @@ public class ConsentFormActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 interviewDetails.setSelectedVenue(spinVenue.getSelectedItem().toString());
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Venue selected : " + spinVenue.getSelectedItem().toString()+"\n");
                 InterviewDetails.setInstance(interviewDetails);
 
                 Intent intent = new Intent(ConsentFormActivity.this, InterviewQuestionnaire.class);

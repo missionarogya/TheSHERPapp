@@ -6,7 +6,6 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.JavascriptInterface;
@@ -25,9 +24,8 @@ public class InterviewQuestionnaire extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interview_questionnaire);
-
         String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        Log.d("omg2", "datestart " + mydate);
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + mydate + " :: Starting the Interview.\n");
         interviewDetails.setStart(mydate);
         InterviewDetails.setInstance(interviewDetails);
 
@@ -66,7 +64,6 @@ public class InterviewQuestionnaire extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
@@ -86,6 +83,7 @@ class JSBridgeToSaveAnswers{
     public void saveAnswersToApp(String answers) {
         //Log.d("omg1 :: ", "ans "+answers);
         interviewDetails.setAnswers(answers);
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nAnswers: " + answers + "\n\n");
         InterviewDetails.setInstance(interviewDetails);
         Intent intent = new Intent(currentActivity,ShowIntervieweeID.class);
         currentActivity.startActivity(intent);
@@ -106,18 +104,18 @@ class JSBridgeToSaveAnswers{
         }
         try {
             mp.reset();
-            //AssetFileDescriptor afd = currentActivity.getAssets().openFd("QS001MSM/audio/aud_1A.mp3");
             AssetFileDescriptor afd = currentActivity.getAssets().openFd(interviewDetails.getQasetID()+audioName);
             mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mp.prepare();
             mp.start();
         } catch (IllegalStateException e) {
             Toast.makeText(currentActivity, "Error in playing audio: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error in playing audio: " + e.getMessage() + "\n\n");
+            InterviewDetails.setInstance(interviewDetails);
         } catch (IOException e) {
             Toast.makeText(currentActivity, "Error(I/O) in playing audio: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error(I/O) in playing audio: " + e.getMessage() + "\n\n");
+            InterviewDetails.setInstance(interviewDetails);
         }
     }
 }
-

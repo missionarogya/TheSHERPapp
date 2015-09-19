@@ -32,9 +32,8 @@ public class ShowIntervieweeID extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_interviewee_id);
-
         String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        //Log.d("omg2", "datestart " + mydate);
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + mydate + " :: Completing the Interview.\n");
         interviewDetails.setEnd(mydate);
         InterviewDetails.setInstance(interviewDetails);
 
@@ -43,6 +42,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
 
         String intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
         interviewDetails.setIntervieweeID(intervieweeID);
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
         InterviewDetails.setInstance(interviewDetails);
         TextView txtintervieweeID = (TextView) findViewById(R.id.intervieweeID);
         txtintervieweeID.setText("Interviewee ID : "+intervieweeID);
@@ -50,16 +50,23 @@ public class ShowIntervieweeID extends AppCompatActivity {
         boolean isUpdated = updateIntervieweeIDtoConfig(interviewDetails.getIntervieweeID());
         if (isUpdated) {
             Toast.makeText(ShowIntervieweeID.this, "Interviewee ID updated to Config file.", Toast.LENGTH_SHORT).show();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID updated to Config file.\n");
+            InterviewDetails.setInstance(interviewDetails);
         } else {
             Toast.makeText(ShowIntervieweeID.this, "Interviewee ID update to Config file failed.", Toast.LENGTH_SHORT).show();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID update to Config file failed.\n");
+            InterviewDetails.setInstance(interviewDetails);
         }
         boolean isWriteSuccessful = writeInterviewDataToDevice(interviewDetails);
         if (isWriteSuccessful) {
             Toast.makeText(ShowIntervieweeID.this, "Successfully updated interview data to device.", Toast.LENGTH_SHORT).show();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Successfully updated interview data to device.\n");
+            InterviewDetails.setInstance(interviewDetails);
         } else {
             Toast.makeText(ShowIntervieweeID.this, "Error occured while updating interview data to device.", Toast.LENGTH_SHORT).show();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Error occured while updating interview data to device.\n");
+            InterviewDetails.setInstance(interviewDetails);
         }
-
         final ImageButton buttonTakeAnotherInterview = (ImageButton) findViewById(R.id.buttonTakeAnotherInterview);
         final Button buttonTakeAnotherInterviewdiffQaset = (Button) findViewById(R.id.buttonTakeAnotherInterviewDiffQAset);
         final Button logout = (Button) findViewById(R.id.logout);
@@ -67,15 +74,6 @@ public class ShowIntervieweeID extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ShowIntervieweeID.this, ConsentFormActivity.class);
-                ShowIntervieweeID.this.startActivity(intent);
-                ShowIntervieweeID.this.finish();
-            }
-        });
-
-        buttonTakeAnotherInterviewdiffQaset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ShowIntervieweeID.this, LogoutActivity.class);
                 ShowIntervieweeID.this.startActivity(intent);
                 ShowIntervieweeID.this.finish();
             }
@@ -107,7 +105,6 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 }
                 fis.close();
                 String outputData = byteArrayOutputStream.toString();
-                //Toast.makeText(ShowIntervieweeID.this, "read data " + byteArrayOutputStream.toString(), Toast.LENGTH_LONG).show();
                 FileOutputStream fos = new FileOutputStream(config);
                 PrintWriter pw = new PrintWriter(fos);
                 outputData = outputData.replaceAll(previousIntervieweeId, intervieweeID);
@@ -117,13 +114,19 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 isUpdated = true;
             } catch (FileNotFoundException e) {
                 Toast.makeText(ShowIntervieweeID.this, "Config File not found: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Config File not found: " + e.getMessage() + "\n\n");
+                InterviewDetails.setInstance(interviewDetails);
                 isUpdated = false;
             } catch (IOException e) {
                 Toast.makeText(ShowIntervieweeID.this, "I/O error: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]I/O error: " + e.getMessage() + "\n\n");
+                InterviewDetails.setInstance(interviewDetails);
                 isUpdated = false;
             }
         } else {
             Toast.makeText(ShowIntervieweeID.this, "Config file does not exist.", Toast.LENGTH_SHORT).show();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Config file does not exist\n");
+            InterviewDetails.setInstance(interviewDetails);
             isUpdated = false;
         }
         return isUpdated;
@@ -142,20 +145,19 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 else{
                     success = false;
                 }
-                //Toast.makeText(ShowIntervieweeID.this, "Interview data successfully written to JSON.", Toast.LENGTH_SHORT).show();
             } else {
                 success = writeToJSON(interviewDataDir, interviewDetails);
-                //Toast.makeText(ShowIntervieweeID.this, "Interview data successfully written to JSON.", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Toast.makeText(ShowIntervieweeID.this, "Error in writing interview data to JSON: "+e.getMessage(), Toast.LENGTH_LONG).show();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error in writing interview data to JSON : " + e.getMessage() + "\n\n");
+            InterviewDetails.setInstance(interviewDetails);
             success = false;
         }
         return success;
     }
 
     private boolean writeToJSON(File interviewDataDir, InterviewDetails interviewDetails) {
-        //Toast.makeText(ShowIntervieweeID.this, "omg: "+interviewDetails.getAnswers(), Toast.LENGTH_LONG).show();
         boolean success;
         File interviewDataFile = new File(interviewDataDir, "interviewData.json");
         if (!interviewDataFile.exists()) {
@@ -182,6 +184,8 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 }
             } catch (IOException e) {
                 Toast.makeText(ShowIntervieweeID.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error in building JSON : " + e.getMessage() + "\n\n");
+                InterviewDetails.setInstance(interviewDetails);
                 success = false;
             }
         } else {
@@ -200,7 +204,9 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 pw.close();
                 success = true;
             } catch (IOException e) {
-                Toast.makeText(ShowIntervieweeID.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ShowIntervieweeID.this, "Error(I/O): "+e.getMessage(), Toast.LENGTH_LONG).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error(I/O) in building JSON : " + e.getMessage() + "\n\n");
+                InterviewDetails.setInstance(interviewDetails);
                 success = false;
             }
         }
@@ -220,8 +226,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
             i = Integer.parseInt(lastIntervieweeID) ;
         }
         i = i+1;
-        String currentIntervieweeID = qasetID + "_" + deviceID + "_" + Integer.toString(i);
-     return currentIntervieweeID;
+        return qasetID + "_" + deviceID + "_" + Integer.toString(i);
     }
 
     @Override

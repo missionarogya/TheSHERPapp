@@ -29,7 +29,8 @@ public class QASetSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qaset_selection2);
-
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Launching QASetSelection screen.\n");
+        InterviewDetails.setInstance(interviewDetails);
         String imgPath ="";
 
         File sherpDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"Sherp");
@@ -101,6 +102,7 @@ public class QASetSelectionActivity extends AppCompatActivity {
         public void onClick(View v) {
             final ImageButton go = (ImageButton) findViewById(R.id.go);
             String s = ((RadioButton) v).getText().toString();
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() +"\nSelected QASet id - "+s+"\n");
             interviewDetails.setQasetID(s);
             InterviewDetails.setInstance(interviewDetails);
             showToast("You have selected QASet: " + s);
@@ -154,25 +156,39 @@ public class QASetSelectionActivity extends AppCompatActivity {
                     }
                     fis.close();
                     configData = byteArrayOutputStream.toString();
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() +"Reading from SherpConfig.txt.\n\n"+configData+"\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 } catch (FileNotFoundException e) {
                     showToast("File not found : " + e.getMessage());
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]File not found : " + e.getMessage() + "\n\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 } catch (IOException e) {
                     showToast("Error(I/O) in reading file : " + e.getMessage());
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error(I/O) in reading file : " + e.getMessage() + "\n\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 } catch (Exception e){
                     showToast("Error in reading file : " + e.getMessage());
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error in reading file : " + e.getMessage() + "\n\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 }
             }
             else{
                 showToast("The Sherp Config file does not exist.");
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "The Sherp Config file does not exist.\n");
+                InterviewDetails.setInstance(interviewDetails);
             }
         }
         else {
             showToast("The Sherp folder does not exist.");
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "The Sherp folder does not exist.\n");
+            InterviewDetails.setInstance(interviewDetails);
         }
     }
     catch(Exception e)
     {
         showToast(e.getMessage());
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n[Exception]Error reading SherpConfig.txt: " + e.getMessage()+"\n\n");
+        InterviewDetails.setInstance(interviewDetails);
     }
     return configData;
       //  return "QS001MSM:dsddsddssdsdsd;" +

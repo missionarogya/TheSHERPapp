@@ -2,7 +2,15 @@ package android.sherp.missionarogya.thesherpapp;
 
 import android.app.Application;
 import android.database.DatabaseErrorHandler;
+import android.os.Environment;
+import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 /**
@@ -12,6 +20,56 @@ public class InterviewDetails{
     private static InterviewDetails ourInstance = new InterviewDetails();
     private String qasetID;
     private String deviceID;
+    private String interviewerID;
+    private String intervieweeID;
+    private String answers;
+    private String start;
+    private String listOfVenues;
+    private String selectedVenue;
+    private String end;
+    private String latitude;
+    private String longitude;
+    private String logMessage = "";
+
+    public static boolean writeToLogFile(String message){
+        boolean success ;
+        File logFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"SherpLog.txt");
+        try {
+            if (logFile.exists() && logFile.isFile()) {
+                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)));
+                pw.println(message);
+                pw.flush();
+                pw.close();
+                success = true;
+            } else {
+                logFile.createNewFile();
+                if(logFile.isFile() && logFile.exists()) {
+                    FileOutputStream f = new FileOutputStream(logFile);
+                    PrintWriter pw = new PrintWriter(f);
+                    pw.println(message);
+                    pw.flush();
+                    pw.close();
+                    f.close();
+                    success = true;
+                }
+                else{
+                    success = false;
+                }
+            }
+        }
+        catch(Exception e){
+            success = false;
+        }
+        return success;
+    }
+
+    public String getLogMessage() {
+        return logMessage;
+    }
+
+    public void setLogMessage(String logMessage) {
+        this.logMessage = logMessage;
+    }
 
     public String getListOfVenues() {
         return listOfVenues;
@@ -29,13 +87,6 @@ public class InterviewDetails{
         this.selectedVenue = selectedVenue;
     }
 
-    private String interviewerID;
-    private String intervieweeID;
-    private String answers;
-    private String start;
-    private String listOfVenues;
-    private String selectedVenue;
-
     public String getLatitude() {
         return latitude;
     }
@@ -51,10 +102,6 @@ public class InterviewDetails{
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
-
-    private String end;
-    private String latitude;
-    private String longitude;
 
     public String getDeviceID() {
         return deviceID;

@@ -55,6 +55,7 @@
         android:clickable="true"
         android:background="@android:color/transparent"
         android:src="@drawable/startinterview"
+        android:contentDescription="Start Interview"
         android:scaleType="fitXY"/>
 
 

@@ -3,8 +3,10 @@ package android.sherp.missionarogya.thesherpapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class LogoutActivity extends AppCompatActivity {
     InterviewDetails interviewDetails = InterviewDetails.getInstance();
@@ -14,6 +16,14 @@ public class LogoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logout);
 
+        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\n" + interviewDetails.getInterviewerID().toUpperCase() + " has logged out.\n-------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        InterviewDetails.setInstance(interviewDetails);
+        if(InterviewDetails.writeToLogFile(interviewDetails.getLogMessage())){
+            Toast.makeText(LogoutActivity.this, "All your actions have been recorded for logging.", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(LogoutActivity.this, "There was a problem logging your actions.", Toast.LENGTH_SHORT).show();
+        }
+        interviewDetails.setLogMessage("");
         interviewDetails.setQasetID(null);
         interviewDetails.setDeviceID(null);
         interviewDetails.setInterviewerID(null);

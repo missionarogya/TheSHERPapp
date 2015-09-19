@@ -106,6 +106,7 @@
         android:clickable="false"
         android:visibility="invisible"
         android:background="@android:color/transparent"
+        android:contentDescription="Start Interview"
         android:src="@drawable/startinterview"
         android:scaleType="fitXY" />
 
