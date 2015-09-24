@@ -73,6 +73,8 @@ public class ShowIntervieweeID extends AppCompatActivity {
         buttonTakeAnotherInterview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Conducting another interview with the same QASet.\n");
+                InterviewDetails.setInstance(interviewDetails);
                 Intent intent = new Intent(ShowIntervieweeID.this, ConsentFormActivity.class);
                 ShowIntervieweeID.this.startActivity(intent);
                 ShowIntervieweeID.this.finish();

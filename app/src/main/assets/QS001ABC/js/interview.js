@@ -7,7 +7,7 @@ var current_question = null;
 var arr_join = "~";
 var j_dir = "json/";
 var img_dir = "images/";
-var aud_dir = "/audio/";
+//var aud_dir = "/audio/";
 var flist = null;
 var load_init_ctr = null;
 var timer;
@@ -327,6 +327,6 @@ function generateAudioButtonName(audioId){
 }
 
 function playQuestion(audioName){
-	var audiosrc = aud_dir + audioName.toString()+".mp3";
+	var audiosrc = audioName.toString()+".mp3";
 	JSBridgeToSaveAnswers.playMusic(audiosrc);
 }

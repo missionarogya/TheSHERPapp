@@ -28,7 +28,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
-        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "-------------------------------------------------------------------------------------------------------------------------------------------------\nLaunching the SHERP Interview app.\n");
+        if(interviewDetails.getLogMessage() == null){
+            interviewDetails.setLogMessage("-------------------------------------------------------------------------------------------------------------------------------------------------\nLaunching the SHERP Interview app.\n");
+        }else {
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage()+"-------------------------------------------------------------------------------------------------------------------------------------------------\nLaunching the SHERP Interview app.\n");
+        }
         InterviewDetails.setInstance(interviewDetails);
 
         if(interviewDetails.getQasetID() == null){
@@ -213,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
             }else{
                 Toast.makeText(LoginActivity.this, "There was a problem logging your actions..", Toast.LENGTH_SHORT).show();
             }
-            interviewDetails.setLogMessage("");
+            interviewDetails.setLogMessage(null);
             InterviewDetails.setInstance(interviewDetails);
             LoginActivity.this.finish();
         }
