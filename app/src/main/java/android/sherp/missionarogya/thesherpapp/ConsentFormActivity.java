@@ -59,6 +59,7 @@ public class ConsentFormActivity extends AppCompatActivity {
         List<String> venueList = Arrays.asList(venues);
 
         final CheckBox isConsentFormSigned = (CheckBox) findViewById(R.id.chkConsent);
+        isConsentFormSigned.setText(interviewDetails.getConsentText());
         final TextView txtLatitude = (TextView) findViewById(R.id.latitude);
         final TextView txtLongitude = (TextView) findViewById(R.id.longitude);
         final ImageButton startInterview = (ImageButton) findViewById(R.id.buttonStartInterview);
@@ -130,7 +131,9 @@ public class ConsentFormActivity extends AppCompatActivity {
         startInterview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                interviewDetails.setSelectedVenue(spinVenue.getSelectedItem().toString());
+                String[] arrSelectedVenueNames = spinVenue.getSelectedItem().toString().split("/");
+                String selectedVenue = arrSelectedVenueNames[0].trim();
+                interviewDetails.setSelectedVenue(selectedVenue);
                 interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Venue selected : " + spinVenue.getSelectedItem().toString()+"\n");
                 InterviewDetails.setInstance(interviewDetails);
 

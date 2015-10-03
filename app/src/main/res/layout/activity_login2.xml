@@ -14,21 +14,20 @@
         android:layout_height="wrap_content"
         android:textSize="20pt"/>
 
-    <EditText
+    <Spinner
+        android:layout_centerInParent="true"
         android:id="@+id/username"
-        android:editable="true"
-        android:textSize="16pt"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your username"
-        android:inputType="text"
-        android:layout_centerInParent="true"/>
+        android:textSize="16pt"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown" />
 
     <ImageButton
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="460dip"
+        android:layout_marginTop="480dip"
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:background="@android:color/transparent"

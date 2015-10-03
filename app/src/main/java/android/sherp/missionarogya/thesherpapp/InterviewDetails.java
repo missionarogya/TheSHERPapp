@@ -29,6 +29,7 @@ public class InterviewDetails{
     private String end;
     private String latitude;
     private String longitude;
+    private String consentText;
     private String logMessage = "";
 
     public static boolean writeToLogFile(String message){
@@ -62,6 +63,11 @@ public class InterviewDetails{
         }
         return success;
     }
+
+
+    public String getConsentText() { return consentText; }
+
+    public void setConsentText(String consentText) { this.consentText = consentText; }
 
     public String getLogMessage() {
         return logMessage;

@@ -9,8 +9,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,83 +40,74 @@ public class LoginActivity extends AppCompatActivity {
         InterviewDetails.setInstance(interviewDetails);
 
         if(interviewDetails.getQasetID() == null){
-            interviewDetails.setLogMessage(interviewDetails.getLogMessage()+"QASet has not been selected yet. Displaying all QASets.\n");
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "QASet has not been selected yet. Displaying all QASets.\n");
             InterviewDetails.setInstance(interviewDetails);
             Intent intent = new Intent(LoginActivity.this, QASetSelectionActivity.class);
             LoginActivity.this.startActivity(intent);
+            LoginActivity.this.finish();
         }
         final ImageButton loginButton = (ImageButton) findViewById(R.id.login);
-        final EditText usernameText   = (EditText) findViewById(R.id.username);
         TextView txtqasetID = (TextView)findViewById(R.id.qasetID);
         if(interviewDetails.getInterviewerID() != null){
-            usernameText.setText(interviewDetails.getInterviewerID());
+          //  usernameText.setText(interviewDetails.getInterviewerID());
         }
-        boolean validUser = false ;
         String fileText = readConfig();
-        String[] users = saveIntervieweeObject(fileText);
+        String users = saveIntervieweeObject(fileText);
         if(interviewDetails.getQasetID() != null){
             txtqasetID.setText(interviewDetails.getQasetID());
             interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Launching the Login screen.\n\nReading from config - " + interviewDetails.getQasetID()+  ".txt" + "\n\n" + fileText + "\n\n");
             InterviewDetails.setInstance(interviewDetails);
         }
-        final String[] listOfUsers = users;
+        String[] arrUsers = users.split(",");
+        List<String> listOfUsers = Arrays.asList(arrUsers);
+
+        final Spinner spinUser = (Spinner) findViewById(R.id.username);
+        ArrayAdapter<String> adp= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOfUsers);
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinUser.setAdapter(adp);
+
         //final String[] listOfUsers = {"sonali","samya","rajib"}; //for emulator
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                boolean isValiduser = false;
-                String username = usernameText.getText().toString().toLowerCase().trim();
-                Log.d("omg : ", "username" + username);
-                for (String uname : listOfUsers) {
-                    Log.d("omg : ", "uname" + uname);
-                    if (username.equals(uname.toLowerCase())) {
-                        interviewDetails.setInterviewerID(username);
-                        InterviewDetails.setInstance(interviewDetails);
-                        Log.d("omg : ", "happy " + username);
-                        isValiduser = true;
-                        break;
-                    }
-                }
-                if (username.length() == 0 || username.equals("") || username == null) {
-                    showToast("Username required");
-                } else if (isValiduser) {
-                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Logged in as: " + interviewDetails.getInterviewerID().toUpperCase() + "\n");
+                if(spinUser.getSelectedItemPosition() > 0){
+                    String[] arrUsernames = spinUser.getSelectedItem().toString().split("/");
+                    String username = arrUsernames[0].trim();
+                    interviewDetails.setInterviewerID(username);
                     InterviewDetails.setInstance(interviewDetails);
                     Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
                     LoginActivity.this.startActivity(intent);
-                } else {
-                    showToast("Access denied");
-                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + username.toUpperCase() + " was denied login access.\n");
+                }else{
+                    showToast("Please select a username before trying to login.");
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + spinUser.getSelectedItem().toString().toUpperCase() + " was denied login access.\n");
                     InterviewDetails.setInstance(interviewDetails);
                 }
             }
         });
 
     }
-
-    String[] saveIntervieweeObject(String fileText){
+    String saveIntervieweeObject(String fileText){
         String[] tokens = fileText.split(";");
-        String[] users = {};
+        String users = "Select a username,";
         for(String s : tokens) {
-            Log.d("omg : ", "token"+s);
+
             String[] params = s.split(":");
-            Log.d("omg : ", "params[0]"+params[0]);
             if (params[0].contains("users")) {
-                Log.d("omg : ", "omg!!");
-                users = params[1].split(",");
+                users = users + params[1];
             }
             if (params[0].contains("last_interviewee_id")) {
-                Log.d("omg : ", "omg!!");
                 interviewDetails.setIntervieweeID(params[1]);
                 InterviewDetails.setInstance(interviewDetails);
             }
             if (params[0].contains("device_id")) {
-                Log.d("omg : ", "omg!!");
                 interviewDetails.setDeviceID(params[1]);
                 InterviewDetails.setInstance(interviewDetails);
             }
             if (params[0].contains("venue")) {
-                Log.d("omg : ", "omg!!");
-                interviewDetails.setListOfVenues("Select,"+params[1]);
+                interviewDetails.setListOfVenues("Select," + params[1]);
+                InterviewDetails.setInstance(interviewDetails);
+            }
+            if (params[0].contains("consentText")) {
+                interviewDetails.setConsentText(params[1]);
                 InterviewDetails.setInstance(interviewDetails);
             }
 
@@ -138,8 +133,8 @@ public class LoginActivity extends AppCompatActivity {
             }
             else
             {
-                showToast(qasetID + "Config File does not exist");
-                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + qasetID + "Config File does not exist. \n");
+                showToast(qasetID + " : Config File does not exist");
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + qasetID + " : Config File does not exist. \n");
                 InterviewDetails.setInstance(interviewDetails);
                 config = null;
             }
@@ -158,8 +153,6 @@ public class LoginActivity extends AppCompatActivity {
                     FileInputStream fis = new FileInputStream(config);
                     int content;
                     while ((content = fis.read()) != -1) {
-                        // convert to char and display it
-                        System.out.print((char) content);
                         byteArrayOutputStream.write((char) content);
                     }
                     fis.close();
@@ -184,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
     private void showToast(String message){
         Toast toast;
         toast = Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 330);
+        //toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 330);
         toast.show();
     }
 

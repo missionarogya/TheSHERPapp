@@ -44,9 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity = "start"
-        android:layout_marginTop="90dp"
-        android:text="The interviewee has signed the consent form and will abide by all the rules for the interview.There will interviewer interviewee confidentiality as per the norms of the research organization.
-        " />
+        android:layout_marginTop="90dp"/>
 
     <TextView
         android:id="@+id/txtVenue"
@@ -56,13 +54,13 @@
         android:text="Venue : "
         android:clickable="false"
         android:visibility="invisible"
-        android:layout_marginTop="311dip"
+        android:layout_marginTop="332dip"
         android:layout_alignLeft="@id/txtVenue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Spinner
-        android:layout_marginTop="300dip"
+        android:layout_marginTop="330dip"
         android:id="@+id/spinnerVenue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

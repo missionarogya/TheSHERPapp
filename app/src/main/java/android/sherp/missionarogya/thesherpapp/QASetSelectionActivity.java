@@ -80,9 +80,9 @@ public class QASetSelectionActivity extends AppCompatActivity {
                     imageView.setMaxWidth(10);
                     imageView.setY(k);
                     imageView.setX(50);
-                    i = i+170;
-                    j = j+200;
-                    k = k+200;
+                    i = i+220;
+                    j = j+250;
+                    k = k+250;
                 }
             }
         }

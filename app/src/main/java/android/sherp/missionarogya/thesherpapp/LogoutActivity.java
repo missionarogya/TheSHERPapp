@@ -24,6 +24,7 @@ public class LogoutActivity extends AppCompatActivity {
             Toast.makeText(LogoutActivity.this, "There was a problem logging your actions.", Toast.LENGTH_SHORT).show();
         }
         interviewDetails.setLogMessage(null);
+        interviewDetails.setConsentText(null);
         interviewDetails.setQasetID(null);
         interviewDetails.setDeviceID(null);
         interviewDetails.setInterviewerID(null);
