@@ -221,7 +221,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
         int i ;
         if(!lastIntervieweeID.equals("0000"))
         {
-            String substr = lastIntervieweeID.substring(15);
+            String substr = lastIntervieweeID.substring(interviewDetails.getQasetID().length()+("_").length()+interviewDetails.getDeviceID().length()+("_").length()+1-1);
             i = Integer.parseInt(substr);
         }
         else
