@@ -30,65 +30,66 @@ public class ShowIntervieweeID extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_interviewee_id);
-        String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + mydate + " :: Completing the Interview.\n");
-        interviewDetails.setEnd(mydate);
-        InterviewDetails.setInstance(interviewDetails);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_show_interviewee_id);
+            String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + mydate + " :: Completing the Interview.\n");
+            interviewDetails.setEnd(mydate);
+            InterviewDetails.setInstance(interviewDetails);
 
-        TextView txtuser = (TextView) findViewById(R.id.loginID);
-        txtuser.setText(interviewDetails.getInterviewerID());
+            TextView txtuser = (TextView) findViewById(R.id.loginID);
+            txtuser.setText(interviewDetails.getInterviewerID());
 
-        String intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
-        interviewDetails.setIntervieweeID(intervieweeID);
-        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
-        InterviewDetails.setInstance(interviewDetails);
-        TextView txtintervieweeID = (TextView) findViewById(R.id.intervieweeID);
-        txtintervieweeID.setText("Interviewee ID : "+intervieweeID);
+            String intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
+            interviewDetails.setIntervieweeID(intervieweeID);
+            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
+            InterviewDetails.setInstance(interviewDetails);
+            TextView txtintervieweeID = (TextView) findViewById(R.id.intervieweeID);
+            txtintervieweeID.setText("Interviewee ID : " + intervieweeID);
 
-        boolean isUpdated = updateIntervieweeIDtoConfig(interviewDetails.getIntervieweeID());
-        if (isUpdated) {
-            Toast.makeText(ShowIntervieweeID.this, "Interviewee ID updated to Config file.", Toast.LENGTH_SHORT).show();
-            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID updated to Config file.\n");
-            InterviewDetails.setInstance(interviewDetails);
-        } else {
-            Toast.makeText(ShowIntervieweeID.this, "Interviewee ID update to Config file failed.", Toast.LENGTH_SHORT).show();
-            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID update to Config file failed.\n");
-            InterviewDetails.setInstance(interviewDetails);
-        }
-        boolean isWriteSuccessful = writeInterviewDataToDevice(interviewDetails);
-        if (isWriteSuccessful) {
-            Toast.makeText(ShowIntervieweeID.this, "Successfully updated interview data to device.", Toast.LENGTH_SHORT).show();
-            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Successfully updated interview data to device.\n");
-            InterviewDetails.setInstance(interviewDetails);
-        } else {
-            Toast.makeText(ShowIntervieweeID.this, "Error occured while updating interview data to device.", Toast.LENGTH_SHORT).show();
-            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Error occured while updating interview data to device.\n");
-            InterviewDetails.setInstance(interviewDetails);
-        }
-        final ImageButton buttonTakeAnotherInterview = (ImageButton) findViewById(R.id.buttonTakeAnotherInterview);
-        final Button buttonTakeAnotherInterviewdiffQaset = (Button) findViewById(R.id.buttonTakeAnotherInterviewDiffQAset);
-        final Button logout = (Button) findViewById(R.id.logout);
-        buttonTakeAnotherInterview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Conducting another interview with the same QASet.\n");
+            boolean isUpdated = updateIntervieweeIDtoConfig(interviewDetails.getIntervieweeID());
+            if (isUpdated) {
+                Toast.makeText(ShowIntervieweeID.this, "Interviewee ID updated to Config file.", Toast.LENGTH_SHORT).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID updated to Config file.\n");
                 InterviewDetails.setInstance(interviewDetails);
-                Intent intent = new Intent(ShowIntervieweeID.this, ConsentFormActivity.class);
-                ShowIntervieweeID.this.startActivity(intent);
-                ShowIntervieweeID.this.finish();
+            } else {
+                Toast.makeText(ShowIntervieweeID.this, "Interviewee ID update to Config file failed.", Toast.LENGTH_SHORT).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID update to Config file failed.\n");
+                InterviewDetails.setInstance(interviewDetails);
             }
-        });
+            boolean isWriteSuccessful = writeInterviewDataToDevice(interviewDetails);
+            if (isWriteSuccessful) {
+                Toast.makeText(ShowIntervieweeID.this, "Successfully updated interview data to device.", Toast.LENGTH_SHORT).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Successfully updated interview data to device.\n");
+                InterviewDetails.setInstance(interviewDetails);
+            } else {
+                Toast.makeText(ShowIntervieweeID.this, "Error occured while updating interview data to device.", Toast.LENGTH_SHORT).show();
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Error occured while updating interview data to device.\n");
+                InterviewDetails.setInstance(interviewDetails);
+            }
+            final ImageButton buttonTakeAnotherInterview = (ImageButton) findViewById(R.id.buttonTakeAnotherInterview);
+            final Button buttonTakeAnotherInterviewdiffQaset = (Button) findViewById(R.id.buttonTakeAnotherInterviewDiffQAset);
+            final Button logout = (Button) findViewById(R.id.logout);
+            buttonTakeAnotherInterview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Conducting another interview with the same QASet.\n");
+                    InterviewDetails.setInstance(interviewDetails);
+                    Intent intent = new Intent(ShowIntervieweeID.this, ConsentFormActivity.class);
+                    ShowIntervieweeID.this.startActivity(intent);
+                    ShowIntervieweeID.this.finish();
+                }
+            });
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ShowIntervieweeID.this, LogoutActivity.class);
-                ShowIntervieweeID.this.startActivity(intent);
-                ShowIntervieweeID.this.finish();
-            }
-        });
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ShowIntervieweeID.this, LogoutActivity.class);
+                    ShowIntervieweeID.this.startActivity(intent);
+                    ShowIntervieweeID.this.finish();
+                }
+            });
+
     }
 
     private boolean updateIntervieweeIDtoConfig(String intervieweeID) {
@@ -220,7 +221,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
         int i ;
         if(!lastIntervieweeID.equals("0000"))
         {
-            String substr = lastIntervieweeID.substring(16);
+            String substr = lastIntervieweeID.substring(15);
             i = Integer.parseInt(substr);
         }
         else

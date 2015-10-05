@@ -141,12 +141,11 @@ function generate_question(questionid) {
 				rad.setAttribute('value', ansList[i].value);
 				var ansDD = document.createElement('dd');
 				ansDD.appendChild(rad);
-				var image = ansList[i].image
+				var image = ansList[i].image;
 				if(ansList[i].type == "radio" &&  image != null){
 					var img = document.createElement('img'); 
 					img.setAttribute('src', img_dir + image + ".png" );
-					img.setAttribute('class',"col");
-					ansDD.appendChild(img);					
+					ansDD.appendChild(img);
 				}								
 				ansDD.appendChild(lbl); 
 				a.appendChild(ansDD);	
@@ -173,7 +172,8 @@ function processQuestion() {
 			generate_final_result();
 		}
 		 else { 
-			generate_question(current_question[0].branchlogic.success);					
+			generate_question(current_question[0].branchlogic.success);
+			goToNextQuestion(current_question[0].audioLength, current_question[0].audio);
 		}			
 	} else {	
 		var val = null;
@@ -249,22 +249,27 @@ function processQuestion() {
 }
 
 function goToNextQuestion(audioLength, audio_id){
-	if(audio_id != null){
+	if(audio_id != null && audioLength > 0){
 		playQuestion(audio_id);
+		var counter = parseInt(audioLength) + 4 ;
+        	var id = setInterval(function() {
+        		counter--;
+        		if(counter == 0) {
+        			nextButton.style.display = 'inline';
+        			soundButton.style.display = 'inline';
+        			clearInterval(id);
+        		}
+        		else{
+        			nextButton.style.display = 'none';
+        			soundButton.style.display = 'none';
+        		}
+        	}, 1000);
 	}
-	var counter = parseInt(audioLength) ;
-	var id = setInterval(function() {					
-		counter--;
-		if(counter == 0) {
-			nextButton.style.display = 'inline';
-			soundButton.style.display = 'inline';
-			clearInterval(id);
-		}
-		else{
-			nextButton.style.display = 'none';
-			soundButton.style.display = 'none';
-		}
-	}, 1000);	
+	else{
+		soundButton.style.display = 'none';
+		nextButton.style.display = 'inline';
+	}
+
 }
 
 /*Process the branch logic for decision question; isvisible = false;*/
@@ -308,7 +313,7 @@ function generate_final_result() {
 		var txt = id + " :: " + answer;
 		r.innerHTML = txt;
 		//ansList.appendChild(r);
-		if (answer != -99 && answer != "#"){
+		if (answer != -99 && answer != '"#"'){
 			ans.push({"question": id, "answer" : answer});
 			}
 		}
