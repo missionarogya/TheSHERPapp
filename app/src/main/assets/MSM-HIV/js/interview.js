@@ -106,7 +106,30 @@ function generate_question(questionid) {
 		var q_lang = current_question[0].question.lang;
 		var qid = document.createElement('dt');
 		
- 		var id = current_question[0].questionid; id = id.replace("q_", "").replace(/_/g, ""); qid.innerHTML = id; q.appendChild(qid);
+ 		var id = current_question[0].questionid;
+ 		//id = id.replace("q_", "").replace(/_/g, "");
+ 		id = id.replace("q_", "");
+ 		if(id.indexOf("_ben") != -1){
+ 			id = id.replace("_ben", "");
+ 			if(id.indexOf("_") != -1){
+ 				id = id.replace("_"," ");
+ 			}
+ 		}
+ 		else if(id.indexOf("_hin") != -1){
+ 			id = id.replace("_hin", "");
+ 			if(id.indexOf("_") != -1){
+             	id = id.replace("_"," ");
+        	}
+ 		}
+ 		else if(id.indexOf("_eng") != -1){
+ 			id = id.replace("_eng", "");
+ 			if(id.indexOf("_") != -1){
+             	id = id.replace("_"," ");
+         	}
+ 		}
+ 		qid.innerHTML = "#"+id;
+ 		q.appendChild(qid);
+
 		var eng_question = document.createElement('dd'); eng_question.innerHTML = q_eng; q.appendChild( eng_question);
 		qid = document.createElement('dt'); qid.innerHTML = "&nbsp;"; q.appendChild(qid);
 		if(q_lang != undefined && q_lang != 'undefined' && q_lang != null) {
@@ -128,7 +151,7 @@ function generate_question(questionid) {
 				lang_ans = "";
 			}
 			var lbl = document.createElement("label");
-			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/><br/><br/><br/>";
+			lbl.innerHTML = "&nbsp;&nbsp;" + en_ans + "&nbsp;&nbsp;" + lang_ans+"<br/><br/><br/>";
 			if(ansList[i].type == "radio" || ansList[i].type == "checkbox" || ansList[i].type == "text" || ansList[i].type == "number") {
 			
 				var rad = document.createElement('input'); 
