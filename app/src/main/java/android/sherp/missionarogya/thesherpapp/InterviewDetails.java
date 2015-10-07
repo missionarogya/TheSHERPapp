@@ -18,6 +18,8 @@ import java.util.Date;
  */
 public class InterviewDetails{
     private static InterviewDetails ourInstance = new InterviewDetails();
+    private int selectedUsernameLocation = 0;
+    private int selectedVenueLocation = 0;
     private String qasetID;
     private String deviceID;
     private String interviewerID;
@@ -32,7 +34,21 @@ public class InterviewDetails{
     private String consentText;
     private String logMessage = "";
 
-    public static boolean writeToLogFile(String message){
+    public int getSelectedUsernameLocation() { return selectedUsernameLocation;}
+
+    public void setSelectedUsernameLocation(int selectedUsernameLocation) {
+        this.selectedUsernameLocation = selectedUsernameLocation;
+    }
+
+    public int getSelectedVenueLocation() {
+        return selectedVenueLocation;
+    }
+
+    public void setSelectedVenueLocation(int selectedVenueLocation) {
+        this.selectedVenueLocation = selectedVenueLocation;
+    }
+
+     public static boolean writeToLogFile(String message){
         boolean success ;
         File logFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),"SherpLog.txt");
         try {

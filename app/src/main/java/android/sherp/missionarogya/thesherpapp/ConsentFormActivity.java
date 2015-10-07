@@ -67,6 +67,16 @@ public class ConsentFormActivity extends AppCompatActivity {
         final Spinner spinVenue = (Spinner) findViewById(R.id.spinnerVenue);
         final ArrayAdapter<String> adp= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,venueList);
 
+        if(interviewDetails.getSelectedVenueLocation() != 0){
+            isConsentFormSigned.setChecked(true);
+            txtVenue.setVisibility(View.VISIBLE);
+            spinVenue.setVisibility(View.VISIBLE);
+            spinVenue.setAdapter(adp);
+            spinVenue.setClickable(true);
+            spinVenue.setSelection(interviewDetails.getSelectedVenueLocation());
+            startInterview.setVisibility(View.VISIBLE);
+            startInterview.setClickable(true);
+        }
 
         isConsentFormSigned.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +105,8 @@ public class ConsentFormActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if((isConsentFormSigned.isChecked()) && ( spinVenue.getSelectedItemPosition() > 0 )  ){
+                    interviewDetails.setSelectedVenueLocation(spinVenue.getSelectedItemPosition());
+                    InterviewDetails.setInstance(interviewDetails);
                     startInterview.setVisibility(View.VISIBLE);
                     startInterview.setClickable(true);
                     if(!interviewDetails.getLatitude().equals("0.0")) {

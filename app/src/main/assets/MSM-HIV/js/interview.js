@@ -274,7 +274,7 @@ function processQuestion() {
 function goToNextQuestion(audioLength, audio_id){
 	if(audio_id != null && audioLength > 0){
 		playQuestion(audio_id);
-		var counter = parseInt(audioLength) + 4 ;
+		var counter = parseInt(audioLength) + 2 ;
         	var id = setInterval(function() {
         		counter--;
         		if(counter == 0) {

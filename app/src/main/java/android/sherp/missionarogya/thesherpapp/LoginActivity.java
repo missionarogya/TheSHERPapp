@@ -48,9 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         final ImageButton loginButton = (ImageButton) findViewById(R.id.login);
         TextView txtqasetID = (TextView)findViewById(R.id.qasetID);
-        if(interviewDetails.getInterviewerID() != null){
-          //  usernameText.setText(interviewDetails.getInterviewerID());
-        }
+
         String fileText = readConfig();
         String users = saveIntervieweeObject(fileText);
         if(interviewDetails.getQasetID() != null){
@@ -66,12 +64,18 @@ public class LoginActivity extends AppCompatActivity {
         adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinUser.setAdapter(adp);
 
+        if(interviewDetails.getSelectedUsernameLocation() != 0){
+            spinUser.setSelection(interviewDetails.getSelectedUsernameLocation());
+        }
+
         //final String[] listOfUsers = {"sonali","samya","rajib"}; //for emulator
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(spinUser.getSelectedItemPosition() > 0){
                     String[] arrUsernames = spinUser.getSelectedItem().toString().split("/");
                     String username = arrUsernames[0].trim();
+                    interviewDetails.setSelectedUsernameLocation(spinUser.getSelectedItemPosition());
                     interviewDetails.setInterviewerID(username);
                     InterviewDetails.setInstance(interviewDetails);
                     Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
