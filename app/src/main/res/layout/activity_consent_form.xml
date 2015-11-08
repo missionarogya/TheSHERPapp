@@ -8,9 +8,7 @@
     android:background="#E6E6E6"
     tools:context="android.sherp.missionarogya.thesherpapp.ConsentFormActivity">
 
-
-
-    <TextView
+   <TextView
         android:textColor="#000"
         android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
@@ -54,7 +52,7 @@
         android:text="Venue : "
         android:clickable="false"
         android:visibility="invisible"
-        android:layout_marginTop="332dip"
+        android:layout_marginTop="337dip"
         android:layout_alignLeft="@id/txtVenue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -95,11 +93,32 @@
         android:visibility="invisible"
         android:text="" />
 
+    <TextView
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="506dp"
+        android:layout_marginLeft="0dp"
+        android:id="@+id/txtIntervieweeId"
+        android:layout_height="wrap_content"
+        android:textSize="16pt"
+        android:layout_alignLeft="@id/txtIntervieweeId"
+        android:visibility="invisible"
+        android:text="Interviewee ID: " />
+
+    <EditText
+        android:id="@+id/editIntervieweeId"
+        android:layout_toEndOf="@id/txtIntervieweeId"
+        android:layout_marginTop="500dp"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ImageButton
         android:id="@+id/buttonStartInterview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="680dp"
+        android:layout_marginTop="620dp"
         android:layout_centerHorizontal="true"
         android:clickable="false"
         android:visibility="invisible"

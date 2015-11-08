@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -56,9 +57,9 @@ public class QASetSelectionActivity extends AppCompatActivity {
                     radioButtonView.setGravity(Gravity.START);
                     ImageView imageView = new ImageView(this);
                     if(radio.length == 2) {
-                        radio[0] = radio[0].replaceAll("(\\r|\\n)", "");
-                        radioButtonView.setText(radio[0]);
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(imgPath + File.separator + radio[0] + ".png"));
+                      radio[0] = radio[0].replaceAll("(\\r|\\n)", "");
+                      radioButtonView.setText(radio[0]);
+                      imageView.setImageBitmap(BitmapFactory.decodeFile(imgPath + File.separator + radio[0] + ".png"));
                     }
                     layout.addView(imageView, RelativeLayout.LayoutParams.MATCH_PARENT);
                     imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));

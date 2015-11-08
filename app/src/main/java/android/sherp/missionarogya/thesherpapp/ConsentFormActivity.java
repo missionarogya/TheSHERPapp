@@ -3,6 +3,7 @@ package android.sherp.missionarogya.thesherpapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,7 +26,6 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,6 +59,8 @@ public class ConsentFormActivity extends AppCompatActivity {
         String[] venues = (interviewDetails.getListOfVenues()).split(",");
         List<String> venueList = Arrays.asList(venues);
 
+        final EditText lookupIntervieweeId = (EditText)findViewById(R.id.editIntervieweeId);
+        final TextView txtLookupIntervieweeId = (TextView)findViewById(R.id.txtIntervieweeId);
         final CheckBox isConsentFormSigned = (CheckBox) findViewById(R.id.chkConsent);
         isConsentFormSigned.setText(interviewDetails.getConsentText());
         final TextView txtLatitude = (TextView) findViewById(R.id.latitude);
@@ -95,6 +98,8 @@ public class ConsentFormActivity extends AppCompatActivity {
                     txtVenue.setClickable(false);
                     spinVenue.setVisibility(View.INVISIBLE);
                     spinVenue.setClickable(false);
+                    lookupIntervieweeId.setVisibility(View.INVISIBLE);
+                    txtLookupIntervieweeId.setVisibility(View.INVISIBLE);
                     startInterview.setVisibility(View.INVISIBLE);
                     startInterview.setClickable(false);
                 }
@@ -123,10 +128,24 @@ public class ConsentFormActivity extends AppCompatActivity {
                     else{
                         txtLongitude.setVisibility(View.INVISIBLE);
                     }
+                    if(interviewDetails.isFollowup()){
+                        lookupIntervieweeId.setVisibility(View.VISIBLE);
+                        txtLookupIntervieweeId.setVisibility(View.VISIBLE);
+                        if(!(lookupIntervieweeId.getText().length() == 16 || lookupIntervieweeId.getText().length() == 13))
+                            lookupIntervieweeId.append(interviewDetails.getQasetID()+"_"+"tab00");
+                        startInterview.setVisibility(View.VISIBLE);
+                        startInterview.setClickable(true);
+                    }
+                    else{
+                        startInterview.setVisibility(View.VISIBLE);
+                        startInterview.setClickable(true);
+                    }
                 }
                 else{
                     txtLatitude.setVisibility(View.INVISIBLE);
                     txtLongitude.setVisibility(View.INVISIBLE);
+                    lookupIntervieweeId.setVisibility(View.INVISIBLE);
+                    txtLookupIntervieweeId.setVisibility(View.INVISIBLE);
                     startInterview.setVisibility(View.INVISIBLE);
                     startInterview.setClickable(false);
                 }
@@ -135,6 +154,8 @@ public class ConsentFormActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
                 txtLatitude.setVisibility(View.INVISIBLE);
                 txtLongitude.setVisibility(View.INVISIBLE);
+                lookupIntervieweeId.setVisibility(View.INVISIBLE);
+                txtLookupIntervieweeId.setVisibility(View.INVISIBLE);
                 startInterview.setVisibility(View.INVISIBLE);
                 startInterview.setClickable(false);
             }
@@ -148,10 +169,23 @@ public class ConsentFormActivity extends AppCompatActivity {
                 interviewDetails.setSelectedVenue(selectedVenue);
                 interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Venue selected : " + spinVenue.getSelectedItem().toString()+"\n");
                 InterviewDetails.setInstance(interviewDetails);
-
                 Intent intent = new Intent(ConsentFormActivity.this, InterviewQuestionnaire.class);
-                ConsentFormActivity.this.startActivity(intent);
-                ConsentFormActivity.this.finish();
+                if(interviewDetails.isFollowup()) {
+                    String intervieweeId = lookupIntervieweeId.getText().toString().trim();
+                    if(intervieweeId.length() >= 16 && intervieweeId != null) {
+                        interviewDetails.setIntervieweeID(intervieweeId);
+                        interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Current Interviewee Id (Follow - up interview) : " + intervieweeId + "\n");
+                        InterviewDetails.setInstance(interviewDetails);
+                        ConsentFormActivity.this.startActivity(intent);
+                        ConsentFormActivity.this.finish();
+                    } else{
+                        showToast("A valid interviewee Id is required as this is a follow up interview.");
+                    }
+                }
+                else{
+                    ConsentFormActivity.this.startActivity(intent);
+                    ConsentFormActivity.this.finish();
+                }
             }
         });
 
@@ -171,6 +205,13 @@ public class ConsentFormActivity extends AppCompatActivity {
         Intent intent = new Intent(ConsentFormActivity.this, LoginActivity.class);
         ConsentFormActivity.this.startActivity(intent);
         ConsentFormActivity.this.finish();
+    }
+
+    private void showToast(String message){
+        Toast toast;
+        toast = Toast.makeText(ConsentFormActivity.this, message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 890);
+        toast.show();
     }
 
     @Override

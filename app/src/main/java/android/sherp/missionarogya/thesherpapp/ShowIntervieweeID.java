@@ -40,22 +40,30 @@ public class ShowIntervieweeID extends AppCompatActivity {
             TextView txtuser = (TextView) findViewById(R.id.loginID);
             txtuser.setText(interviewDetails.getInterviewerID());
 
-            String intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
-            interviewDetails.setIntervieweeID(intervieweeID);
-            interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
-            InterviewDetails.setInstance(interviewDetails);
+            String intervieweeID = interviewDetails.getIntervieweeID();
+            boolean isUpdated = false;
+            if(intervieweeID == null){
+                intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
+                isUpdated = updateIntervieweeIDtoConfig(intervieweeID);
+                interviewDetails.setIntervieweeID(intervieweeID);
+                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
+                InterviewDetails.setInstance(interviewDetails);
+            }
             TextView txtintervieweeID = (TextView) findViewById(R.id.intervieweeID);
             txtintervieweeID.setText("Interviewee ID : " + intervieweeID);
 
-            boolean isUpdated = updateIntervieweeIDtoConfig(interviewDetails.getIntervieweeID());
             if (isUpdated) {
                 Toast.makeText(ShowIntervieweeID.this, "Interviewee ID updated to Config file.", Toast.LENGTH_SHORT).show();
                 interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID updated to Config file.\n");
                 InterviewDetails.setInstance(interviewDetails);
             } else {
-                Toast.makeText(ShowIntervieweeID.this, "Interviewee ID update to Config file failed.", Toast.LENGTH_SHORT).show();
-                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID update to Config file failed.\n");
-                InterviewDetails.setInstance(interviewDetails);
+                if(interviewDetails.isFollowup()) {
+                    Toast.makeText(ShowIntervieweeID.this, "This is a follow up interview.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(ShowIntervieweeID.this, "Interviewee ID update to Config file failed.", Toast.LENGTH_SHORT).show();
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID update to Config file failed.\n");
+                    InterviewDetails.setInstance(interviewDetails);
+                }
             }
             boolean isWriteSuccessful = writeInterviewDataToDevice(interviewDetails);
             if (isWriteSuccessful) {
@@ -162,7 +170,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
 
     private boolean writeToJSON(File interviewDataDir, InterviewDetails interviewDetails) {
         boolean success;
-        File interviewDataFile = new File(interviewDataDir, "interviewData.json");
+        File interviewDataFile = new File(interviewDataDir, "interviewData_"+interviewDetails.getDeviceID()+".json");
         if (!interviewDataFile.exists()) {
             try {
                 interviewDataFile.createNewFile();
@@ -172,6 +180,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
                     pw.println("[");
                     pw.println("    {");
                     pw.println("        \"qaset_id\":"+"\""+interviewDetails.getQasetID()+"\",");
+                    pw.println("        \"followup\":"+"\""+interviewDetails.isFollowup()+"\",");
                     pw.println("        \"interviewer_id\":"+"\""+interviewDetails.getInterviewerID()+"\",");
                     pw.println("        \"interviewee_id\":"+"\""+interviewDetails.getIntervieweeID()+"\",");
                     pw.println("        \"interview_dttm\": { \"startdt_tm\":"+"\""+interviewDetails.getStart()+"\", \"enddt_tm\":"+"\""+interviewDetails.getEnd()+"\"},");
@@ -197,6 +206,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
                 pw.println("    },");
                 pw.println("    {");
                 pw.println("        \"qaset_id\":"+"\""+interviewDetails.getQasetID()+"\",");
+                pw.println("        \"followup\":"+"\""+interviewDetails.isFollowup()+"\",");
                 pw.println("        \"interviewer_id\":"+"\""+interviewDetails.getInterviewerID()+"\",");
                 pw.println("        \"interviewee_id\":"+"\""+interviewDetails.getIntervieweeID()+"\",");
                 pw.println("        \"interview_dttm\": { \"startdt_tm\":"+"\""+interviewDetails.getStart()+"\", \"enddt_tm\":"+"\""+interviewDetails.getEnd()+"\"},");

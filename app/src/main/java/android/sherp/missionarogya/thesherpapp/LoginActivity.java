@@ -1,5 +1,7 @@
 package android.sherp.missionarogya.thesherpapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -59,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         String[] arrUsers = users.split(",");
         List<String> listOfUsers = Arrays.asList(arrUsers);
 
+        final CheckBox checkbox = (CheckBox)findViewById(R.id.isFollowup);
         final Spinner spinUser = (Spinner) findViewById(R.id.username);
         ArrayAdapter<String> adp= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOfUsers);
         adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -67,7 +71,12 @@ public class LoginActivity extends AppCompatActivity {
         if(interviewDetails.getSelectedUsernameLocation() != 0){
             spinUser.setSelection(interviewDetails.getSelectedUsernameLocation());
         }
-
+        if(interviewDetails.isFollowup()){
+            checkbox.setChecked(true);
+        }
+        else{
+            checkbox.setChecked(false);
+        }
         //final String[] listOfUsers = {"sonali","samya","rajib"}; //for emulator
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +86,37 @@ public class LoginActivity extends AppCompatActivity {
                     String username = arrUsernames[0].trim();
                     interviewDetails.setSelectedUsernameLocation(spinUser.getSelectedItemPosition());
                     interviewDetails.setInterviewerID(username);
-                    InterviewDetails.setInstance(interviewDetails);
-                    Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
-                    LoginActivity.this.startActivity(intent);
+                    if (checkbox.isChecked()){
+                        interviewDetails.setIsFollowup(true);
+                        InterviewDetails.setInstance(interviewDetails);
+                        Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
+                        LoginActivity.this.startActivity(intent);
+                    }else{
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        //Yes button clicked
+                                        interviewDetails.setIsFollowup(true);
+                                        InterviewDetails.setInstance(interviewDetails);
+                                        Intent intent = new Intent(LoginActivity.this, ConsentFormActivity.class);
+                                        LoginActivity.this.startActivity(intent);
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        interviewDetails.setIsFollowup(false);
+                                        InterviewDetails.setInstance(interviewDetails);
+                                        Intent intent1 = new Intent(LoginActivity.this, ConsentFormActivity.class);
+                                        LoginActivity.this.startActivity(intent1);
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        builder.setMessage("Is this a follow up interview?").setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+                    }
                 }else{
                     showToast("Please select a username before trying to login.");
                     interviewDetails.setLogMessage(interviewDetails.getLogMessage() + spinUser.getSelectedItem().toString().toUpperCase() + " was denied login access.\n");
@@ -87,8 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
     String saveIntervieweeObject(String fileText){
         String[] tokens = fileText.split(";");
         String users = "Select a username,";

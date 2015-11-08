@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Survey1</title>
+	<link rel="stylesheet" type="text/css" href="css/survey.css">
+</head>
+<body onload="init('list.json');">
+	<div id="loading" class="show">
+		<center><label>Loading Survey, please wait</label></center>
+		<div id="loadingpercent">Completed</div>
+		<center><label id="currentSurvey"></label> of <label id="surveyTotal"></label></center>
+	</div>	
+	<div id="qDiv" class="hide">
+		<dl id="question"></dl>
+<nav id="nav1">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<img id="playQues" name="" style="display:none;" onclick="playQuestion(this.name)" src="images/play.png" alt="Play Sound">
+  </nav>
+		<dl id="answer" style="display:inline;"></dl>
+		<dl>
+			<dt>&nbsp;</dt>
+			<img id="btnNext" src="images/next.png" style="display:none;" onclick="processQuestion()">
+		</dl>
+	</div>
+	<ul id="finalList" class="hide"></ul>
+	<script type="text/javascript" src="js/interview.js"></script>
+</body>
+</html>

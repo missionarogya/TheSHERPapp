@@ -39,6 +39,7 @@ public class LogoutActivity extends AppCompatActivity {
         interviewDetails.setLongitude(null);
         interviewDetails.setListOfVenues(null);
         interviewDetails.setSelectedVenue(null);
+        interviewDetails.setIsFollowup(false);
         InterviewDetails.setInstance(interviewDetails);
 
         Intent intent = new Intent(LogoutActivity.this, LoginActivity.class);

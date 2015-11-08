@@ -20,6 +20,7 @@ public class InterviewDetails{
     private static InterviewDetails ourInstance = new InterviewDetails();
     private int selectedUsernameLocation = 0;
     private int selectedVenueLocation = 0;
+    private boolean isFollowup = false;
     private String qasetID;
     private String deviceID;
     private String interviewerID;
@@ -33,6 +34,10 @@ public class InterviewDetails{
     private String longitude;
     private String consentText;
     private String logMessage = "";
+
+    public boolean isFollowup() {return isFollowup;}
+
+    public void setIsFollowup(boolean isFollowup) {this.isFollowup = isFollowup;}
 
     public int getSelectedUsernameLocation() { return selectedUsernameLocation;}
 
