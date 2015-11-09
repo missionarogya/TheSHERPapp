@@ -26,6 +26,7 @@ import java.util.Calendar;
 public class ShowIntervieweeID extends AppCompatActivity {
 
     InterviewDetails interviewDetails = InterviewDetails.getInstance();
+    String qasetID = interviewDetails.getQasetID();
     String previousIntervieweeId;
 
     @Override
@@ -42,7 +43,7 @@ public class ShowIntervieweeID extends AppCompatActivity {
 
             String intervieweeID = interviewDetails.getIntervieweeID();
             boolean isUpdated = false;
-            if(intervieweeID == null){
+            if(intervieweeID == null && !(qasetID.equals("DEMO"))){
                 intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
                 isUpdated = updateIntervieweeIDtoConfig(intervieweeID);
                 interviewDetails.setIntervieweeID(intervieweeID);
@@ -59,24 +60,36 @@ public class ShowIntervieweeID extends AppCompatActivity {
             } else {
                 if(interviewDetails.isFollowup()) {
                     Toast.makeText(ShowIntervieweeID.this, "This is a follow up interview.", Toast.LENGTH_SHORT).show();
+                }else if((qasetID.equals("DEMO"))){
+                    Toast.makeText(ShowIntervieweeID.this, "Interviewee ID not updated to Config file as this was a demo interview.", Toast.LENGTH_SHORT).show();
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID not updated to Config file as this was a demo interview.\n");
+                    InterviewDetails.setInstance(interviewDetails);
                 }else {
                     Toast.makeText(ShowIntervieweeID.this, "Interviewee ID update to Config file failed.", Toast.LENGTH_SHORT).show();
                     interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Interviewee ID update to Config file failed.\n");
                     InterviewDetails.setInstance(interviewDetails);
                 }
             }
-            boolean isWriteSuccessful = writeInterviewDataToDevice(interviewDetails);
+            boolean isWriteSuccessful = false;
+            if( !(qasetID.equals("DEMO"))) {
+                isWriteSuccessful = writeInterviewDataToDevice(interviewDetails);
+            }
             if (isWriteSuccessful) {
                 Toast.makeText(ShowIntervieweeID.this, "Successfully updated interview data to device.", Toast.LENGTH_SHORT).show();
                 interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Successfully updated interview data to device.\n");
                 InterviewDetails.setInstance(interviewDetails);
             } else {
-                Toast.makeText(ShowIntervieweeID.this, "Error occured while updating interview data to device.", Toast.LENGTH_SHORT).show();
-                interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Error occured while updating interview data to device.\n");
-                InterviewDetails.setInstance(interviewDetails);
+                if((qasetID.equals("DEMO"))){
+                    Toast.makeText(ShowIntervieweeID.this, "Data not updated to device as this was a demo interview.", Toast.LENGTH_SHORT).show();
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Data not updated to device as this was a demo interview.\n");
+                    InterviewDetails.setInstance(interviewDetails);
+                }else {
+                    Toast.makeText(ShowIntervieweeID.this, "Error occured while updating interview data to device.", Toast.LENGTH_SHORT).show();
+                    interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "Error occured while updating interview data to device.\n");
+                    InterviewDetails.setInstance(interviewDetails);
+                }
             }
             final ImageButton buttonTakeAnotherInterview = (ImageButton) findViewById(R.id.buttonTakeAnotherInterview);
-            final Button buttonTakeAnotherInterviewdiffQaset = (Button) findViewById(R.id.buttonTakeAnotherInterviewDiffQAset);
             final Button logout = (Button) findViewById(R.id.logout);
             buttonTakeAnotherInterview.setOnClickListener(new View.OnClickListener() {
                 @Override
