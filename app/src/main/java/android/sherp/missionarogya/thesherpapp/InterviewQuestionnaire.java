@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -29,16 +30,22 @@ public class InterviewQuestionnaire extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_interview_questionnaire);
         String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         interviewDetails.setLogMessage(interviewDetails.getLogMessage() + mydate + " :: Starting the Interview.\n");
         interviewDetails.setStart(mydate);
         InterviewDetails.setInstance(interviewDetails);
-
-        String url = "file:///android_asset/" + interviewDetails.getQasetID() + "/index.html";
-
+        String url = "file:///android_asset/" + deleteBOMCharacters(interviewDetails.getQasetID()) + "/index.html";
         WebView webView = (WebView) findViewById(R.id.webviewInterviewQuestionnaire);
         WebSettings settings = webView.getSettings();
+        webView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
         settings.setJavaScriptEnabled(true);
         settings.setAllowFileAccessFromFileURLs(true);
         settings.setAllowUniversalAccessFromFileURLs(true);
@@ -46,6 +53,31 @@ public class InterviewQuestionnaire extends AppCompatActivity {
         webView.loadUrl(url);
         webView.addJavascriptInterface(new JSBridgeToSaveAnswers(InterviewQuestionnaire.this, interviewDetails), "JSBridgeToSaveAnswers");
     }
+
+    public String deleteBOMCharacters(String qasetId) {
+        String updatedString = qasetId;
+        int count = 0;
+        char[] charBOM = qasetId.toCharArray();
+        for(char a : charBOM){
+            int intValue = (int) a;
+            // Hexa value of BOM = EF BB BF  => int 65279
+            if (intValue == 65279) {
+                Toast.makeText(getApplicationContext(),"This file starts with a BOM",Toast.LENGTH_SHORT).show();
+                count = count+1;
+                continue;
+            } else {
+                Toast.makeText(getApplicationContext(),"This file does not contain BOM",Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
+        if(count > 0){
+            interviewDetails.setLogMessage("This file contains BOM!");
+            InterviewDetails.setInstance(interviewDetails);
+            updatedString = updatedString.substring(count);
+        }
+        return updatedString;
+    }
+
 
     @Override
     public void onBackPressed() {

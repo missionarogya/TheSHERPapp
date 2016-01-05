@@ -42,10 +42,14 @@ public class ShowIntervieweeID extends AppCompatActivity {
             txtuser.setText(interviewDetails.getInterviewerID());
 
             String intervieweeID = interviewDetails.getIntervieweeID();
-            boolean isUpdated = false;
-            if(intervieweeID == null && !(qasetID.equals("DEMO"))){
+        Toast.makeText(ShowIntervieweeID.this, "omg"+intervieweeID, Toast.LENGTH_SHORT).show();
+
+        boolean isUpdated = false;
+            if(!(interviewDetails.isFollowup()) && !(qasetID.equals("DEMO"))){
+                Toast.makeText(ShowIntervieweeID.this, "tg", Toast.LENGTH_SHORT).show();
                 intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
                 isUpdated = updateIntervieweeIDtoConfig(intervieweeID);
+                Toast.makeText(ShowIntervieweeID.this, "tg1"+isUpdated, Toast.LENGTH_SHORT).show();
                 interviewDetails.setIntervieweeID(intervieweeID);
                 interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
                 InterviewDetails.setInstance(interviewDetails);
