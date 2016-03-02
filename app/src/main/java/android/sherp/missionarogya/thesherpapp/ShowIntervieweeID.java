@@ -42,14 +42,11 @@ public class ShowIntervieweeID extends AppCompatActivity {
             txtuser.setText(interviewDetails.getInterviewerID());
 
             String intervieweeID = interviewDetails.getIntervieweeID();
-        Toast.makeText(ShowIntervieweeID.this, "omg"+intervieweeID, Toast.LENGTH_SHORT).show();
 
-        boolean isUpdated = false;
+            boolean isUpdated = false;
             if(!(interviewDetails.isFollowup()) && !(qasetID.equals("DEMO"))){
-                Toast.makeText(ShowIntervieweeID.this, "tg", Toast.LENGTH_SHORT).show();
                 intervieweeID = generateIntervieweeID(interviewDetails.getIntervieweeID(), interviewDetails.getDeviceID(), interviewDetails.getQasetID());
                 isUpdated = updateIntervieweeIDtoConfig(intervieweeID);
-                Toast.makeText(ShowIntervieweeID.this, "tg1"+isUpdated, Toast.LENGTH_SHORT).show();
                 interviewDetails.setIntervieweeID(intervieweeID);
                 interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nCurrent Interviewee ID : " + intervieweeID + "\n\n");
                 InterviewDetails.setInstance(interviewDetails);
@@ -187,7 +184,8 @@ public class ShowIntervieweeID extends AppCompatActivity {
 
     private boolean writeToJSON(File interviewDataDir, InterviewDetails interviewDetails) {
         boolean success;
-        File interviewDataFile = new File(interviewDataDir, "interviewData_"+interviewDetails.getDeviceID()+".json");
+        //File interviewDataFile = new File(interviewDataDir, "interviewData_"+interviewDetails.getDeviceID()+".json");
+        File interviewDataFile = new File(interviewDataDir, "interviewData.json");
         if (!interviewDataFile.exists()) {
             try {
                 interviewDataFile.createNewFile();

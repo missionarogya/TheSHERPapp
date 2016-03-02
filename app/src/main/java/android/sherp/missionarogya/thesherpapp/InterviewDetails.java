@@ -1,17 +1,12 @@
 package android.sherp.missionarogya.thesherpapp;
 
-import android.app.Application;
-import android.database.DatabaseErrorHandler;
-import android.os.Environment;
-import android.widget.Toast;
 
+import android.os.Environment;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 /**
  * Created by Sonali Sinha on 8/27/2015.
