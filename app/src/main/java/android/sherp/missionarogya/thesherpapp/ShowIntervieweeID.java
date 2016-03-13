@@ -42,6 +42,23 @@ public class ShowIntervieweeID extends AppCompatActivity {
             txtuser.setText(interviewDetails.getInterviewerID());
 
             String intervieweeID = interviewDetails.getIntervieweeID();
+            if(interviewDetails.getQasetID().equals("ANC-STI")){
+                File parentDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Sherp");
+                if (parentDir.exists() && parentDir.isDirectory()) {
+                    File qasetDir = new File(parentDir, interviewDetails.getQasetID());
+                    if (qasetDir.exists() && qasetDir.isDirectory()) {
+                        File soundDir = new File(qasetDir, "audio");
+                        if (soundDir.exists() && soundDir.isDirectory()) {
+                            File file = new File(soundDir,"demo.mp3");
+                            if(file.isFile() && file.exists()){
+                                File newFile = new File(soundDir.getAbsoluteFile()+"/"+interviewDetails.getIntervieweeID()+".mp3");
+                                file.renameTo(newFile);
+                                Toast.makeText(getApplicationContext(),"Interview recorded successfully!",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            }
 
             boolean isUpdated = false;
             if(!(interviewDetails.isFollowup()) && !(qasetID.equals("DEMO"))){

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import java.util.Calendar;
 
 public class InterviewQuestionnaire extends AppCompatActivity {
     InterviewDetails interviewDetails = InterviewDetails.getInstance();
+    MediaRecorder myAudioRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,30 @@ public class InterviewQuestionnaire extends AppCompatActivity {
         interviewDetails.setLogMessage(interviewDetails.getLogMessage() + mydate + " :: Starting the Interview.\n");
         interviewDetails.setStart(mydate);
         InterviewDetails.setInstance(interviewDetails);
+
+        try {
+            myAudioRecorder=new MediaRecorder();
+            myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+            File parentDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Sherp");
+            if (parentDir.exists() && parentDir.isDirectory()) {
+                File qasetDir = new File(parentDir, interviewDetails.getQasetID());
+                if (qasetDir.exists() && qasetDir.isDirectory()) {
+                    File soundDir = new File(qasetDir, "audio");
+                    if (soundDir.exists() && soundDir.isDirectory()) {
+                       myAudioRecorder.setOutputFile(soundDir.getAbsolutePath() +"/demo.mp3");
+                    }
+                }
+            }
+            myAudioRecorder.prepare();
+            myAudioRecorder.start();
+        }
+        catch (Exception e) {
+            Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
+        }
+
+        //to load webview
         String url = "file:///android_asset/" + deleteBOMCharacters(interviewDetails.getQasetID()) + "/index.html";
         WebView webView = (WebView) findViewById(R.id.webviewInterviewQuestionnaire);
         WebSettings settings = webView.getSettings();
@@ -51,7 +77,7 @@ public class InterviewQuestionnaire extends AppCompatActivity {
         settings.setAllowUniversalAccessFromFileURLs(true);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);
-        webView.addJavascriptInterface(new JSBridgeToSaveAnswers(InterviewQuestionnaire.this, interviewDetails), "JSBridgeToSaveAnswers");
+        webView.addJavascriptInterface(new JSBridgeToSaveAnswers(InterviewQuestionnaire.this, interviewDetails, myAudioRecorder), "JSBridgeToSaveAnswers");
     }
 
     public String deleteBOMCharacters(String qasetId) {
@@ -109,17 +135,28 @@ public class InterviewQuestionnaire extends AppCompatActivity {
 
 class JSBridgeToSaveAnswers{
     private Activity currentActivity;
+    MediaRecorder myAudioRecorder;
     InterviewDetails interviewDetails;
     MediaPlayer mp = new MediaPlayer();
     String currentlyPlaying = "none";
 
-    JSBridgeToSaveAnswers(Activity currentActivity, InterviewDetails interviewDetails){
+    JSBridgeToSaveAnswers(Activity currentActivity, InterviewDetails interviewDetails, MediaRecorder myAudioRecorder){
         this.currentActivity = currentActivity;
         this.interviewDetails = interviewDetails;
+        this.myAudioRecorder = myAudioRecorder;
     }
 
     @android.webkit.JavascriptInterface
     public void saveAnswersToApp(String answers) {
+        try {
+            myAudioRecorder.stop();
+            myAudioRecorder.release();
+            myAudioRecorder = null;
+        }
+        catch (Exception e) {
+            Toast.makeText(currentActivity,e.toString(),Toast.LENGTH_LONG).show();
+        }
+        //saving answers
         interviewDetails.setAnswers(answers);
         interviewDetails.setLogMessage(interviewDetails.getLogMessage() + "\nAnswers: " + answers + "\n\n");
         InterviewDetails.setInstance(interviewDetails);
