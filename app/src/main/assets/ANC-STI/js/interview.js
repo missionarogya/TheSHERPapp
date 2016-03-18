@@ -161,7 +161,8 @@ function generate_question(questionid) {
 					rad.setAttribute('pattern',"\d+"); 
 				}
 				rad.setAttribute('name', current_question[0].questionid); 
-				rad.setAttribute('value', ansList[i].value);
+				rad.setAttribute('value', ansList[i].value); // changed for demo - displaying answers instead of answer id
+				//rad.setAttribute('value', ansList[i].label.lang);
 				var ansDD = document.createElement('dd');
 				ansDD.appendChild(rad);
 				var image = ansList[i].image;
@@ -243,7 +244,7 @@ function processQuestion() {
 		}
 		if(val !=undefined && val!='undefined' && val!=null && val!="" ) {
 			/* get the value & branch to a question based on the decision logic) */
-			if(qType != 'radio' && qType !== 'number') {alert("6");
+			if(qType != 'radio' && qType !== 'number') {
 				eval (id + "='" + val + "';");
 			} else { 
 				eval (id + "=" + val + ";");
